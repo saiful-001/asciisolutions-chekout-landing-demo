@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>খাঁটি মধু ও প্রিমিয়াম হানি নাট – অর্ডার করুন</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#0E5A3E">
+<link rel="stylesheet" href="css/style.min.css">
+</head>
+<body>
+
+<!-- 1. Top heading -->
+<header class="s-top" data-sec="top">
+  <h1 id="topHeading"></h1>
+</header>
+
+<!-- 2. Video -->
+<section class="s-video" data-sec="video">
+  <div class="video-box" id="videoBox"></div>
+</section>
+
+<!-- 3. Red notice -->
+<div class="s-notice" data-sec="notice"><span class="notice" id="noticeText"></span></div>
+
+<!-- 4. Primary order button -->
+<div class="s-cta" data-sec="cta1"><button type="button" class="btn-order" data-scroll-order data-cta>👍 এখনই অর্ডার করুন</button></div>
+
+<!-- 5. Benefits card -->
+<section class="s-benefits" data-sec="benefits">
+  <div class="benefit-card">
+    <h2 class="bar" id="benefitsTitle"></h2>
+    <p class="sec-sub" id="benefitsSub"></p>
+    <ul class="checks" id="benefitsList"></ul>
+    <div class="s-cta in-card"><button type="button" class="btn-order" data-scroll-order data-cta>👍 এখনই অর্ডার করুন</button></div>
+  </div>
+</section>
+
+<!-- 6. Dark strip -->
+<div class="s-strip" id="strip1" data-sec="strip1"></div>
+
+<!-- 7. Product / store carousel -->
+<section class="s-gallery" data-sec="gallery">
+  <h2 class="bar wide" id="galleryTitle"></h2>
+  <p class="sec-sub" id="gallerySub"></p>
+  <div class="carousel" data-carousel="gallery"></div>
+  <div class="s-cta"><button type="button" class="btn-order" data-scroll-order data-cta>👍 এখনই অর্ডার করুন</button></div>
+</section>
+
+<!-- 8. Reviews -->
+<section class="s-reviews" data-sec="reviews">
+  <h2 class="bar wide" id="reviewsTitle"></h2>
+  <p class="sec-sub" id="reviewsSub"></p>
+  <div class="carousel" data-carousel="reviews"></div>
+  <div class="s-cta"><button type="button" class="btn-order" data-scroll-order data-cta>👍 এখনই অর্ডার করুন</button></div>
+</section>
+
+<!-- 9. Documents -->
+<section class="s-docs" data-sec="docs">
+  <h2 class="bar green-strip" id="docsTitle"></h2>
+  <p class="sec-sub" id="docsSub"></p>
+  <div class="carousel dark" data-carousel="documents"></div>
+</section>
+
+<!-- 10. Offer banner -->
+<section class="s-offer" data-sec="offer">
+  <p class="offer-line" id="offerLine"></p>
+  <p class="offer-price"><del id="offerOld"></del> <strong id="offerNew"></strong></p>
+  <p class="offer-note" id="offerNote"></p>
+  <button type="button" class="btn-order" data-scroll-order data-cta>👍 এখনই অর্ডার করুন</button>
+</section>
+
+<!-- 11. Dark strip 2 -->
+<div class="s-strip" id="strip2" data-sec="strip2"></div>
+
+<!-- 12. Checkout -->
+<section class="s-checkout" id="checkout" data-sec="checkout">
+  <div class="checkout-wrap">
+    <h2 class="bar wide" id="checkoutTitle"></h2>
+
+    <!-- লাইভ গুগল শিট ডেমো বক্স -->
+    <div class="sheet-demo-card" id="sheetDemoCard">
+      <div class="sdc-content">
+        <div class="sdc-badge"><span class="sdc-live-dot"></span> লাইভ ডেমো প্রিভিউ</div>
+        <h3 class="sdc-title" id="sdcTitle">📊 আপনার ডাটা কীভাবে সেভ হবে তা দেখে নিন</h3>
+        <p class="sdc-desc" id="sdcDesc">অর্ডার সাবমিট করার সাথে সাথে কাস্টমারের নাম, মোবাইল, ঠিকানা ও অর্ডার তথ্য কীভাবে প্রফেশনাল গুগল শিটে স্বয়ংক্রিয়ভাবে জমা হয় তা সরাসরি দেখুন।</p>
+      </div>
+      <a href="#" target="_blank" rel="noopener noreferrer" class="sdc-btn" id="sheetDemoBtn">
+        <span class="sdc-icon">📑</span>
+        <span id="sdcBtnText">আপনার ডাটা যেভাবে সেভ হবে তা লাইভ দেখে নিন ➔</span>
+      </a>
+    </div>
+
+    <form id="orderForm" novalidate>
+      <div class="co-grid">
+        <div class="co-left">
+          <h3 class="sub">পছন্দের পণ্য বেছে নিন (এক বা একাধিক সিলেক্ট করতে পারেন)</h3>
+          <div class="packages" id="packages" aria-label="পণ্য তালিকা"></div>
+
+          <h3 class="sub">বিলিং তথ্য</h3>
+          <div class="field"><label for="name">আপনার নাম <i>*</i></label>
+            <input id="name" name="name" type="text" autocomplete="name" placeholder="আপনার পূর্ণ নাম">
+            <small class="err" data-err="name"></small></div>
+          <div class="field"><label for="phone">মোবাইল নাম্বার <i>*</i></label>
+            <input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="01XXXXXXXXX">
+            <small class="err" data-err="phone"></small></div>
+          <div class="field district-field"><label for="district">জেলা / এলাকা <i>*</i></label>
+            <div class="dist-picker-wrap" id="distPickerWrap">
+              <div class="dist-trigger-box" id="distTriggerBox" role="button" tabindex="0" aria-haspopup="listbox" aria-expanded="false">
+                <span class="dist-pin-icon">📍</span>
+                <input id="district" name="district" type="text" autocomplete="off" readonly placeholder="জেলা নির্বাচন করুন (Select District)">
+                <button type="button" class="dist-btn-search" id="distOpenBtn" aria-label="জেলা খুঁজুন বা নির্বাচন করুন">
+                  <span class="dbs-icon">🔍</span>
+                  <span class="dbs-text">খুঁজুন</span>
+                  <span class="dbs-arrow">▼</span>
+                </button>
+              </div>
+
+              <!-- ড্রপডাউন সার্চ ও জেলা নির্বাচন পপআপ -->
+              <div class="dist-dropdown-box" id="distDropdown">
+                <div class="dist-search-bar">
+                  <span class="dist-search-icon">🔍</span>
+                  <input type="text" id="distSearchInput" placeholder="জেলার নাম লিখুন (যেমন: ঢাকা বা Dhaka)..." autocomplete="off">
+                  <button type="button" class="dist-clear-btn" id="distClearBtn" aria-label="মুছে ফেলুন" title="মুছে ফেলুন" style="display:none">✕</button>
+                  <button type="button" class="dist-submit-search-btn" id="distDoSearchBtn">খুঁজুন</button>
+                </div>
+
+                <div class="dist-status-bar">
+                  <span id="distCountText">মোট ৬৪টি জেলা</span>
+                  <span class="dist-hint">ক্লিক করে নির্বাচন করুন</span>
+                </div>
+
+                <div class="dist-options-list" id="distOptionsList" role="listbox"></div>
+
+                <div class="dist-custom-option" id="distCustomOption" style="display:none">
+                  <button type="button" id="distUseCustomBtn">
+                    <span>✍️ আপনার এলাকা হিসেবে ব্যবহার করুন: </span><strong id="distCustomVal"></strong>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <small class="err" data-err="district"></small></div>
+          <div class="field"><label for="address">সম্পূর্ণ ঠিকানা <i>*</i></label>
+            <textarea id="address" name="address" rows="2" autocomplete="street-address" placeholder="বাসা/রোড/থানা"></textarea>
+            <small class="err" data-err="address"></small></div>
+          <div class="field"><label for="note">অর্ডার নোট (ঐচ্ছিক)</label>
+            <textarea id="note" name="note" rows="2" placeholder="কোনো বিশেষ নির্দেশনা থাকলে লিখুন"></textarea></div>
+        </div>
+
+        <aside class="co-right">
+          <h3 class="sub">আপনার অর্ডার</h3>
+          <div class="summary">
+            <div class="sum-row head"><span>পণ্য</span><span>মোট</span></div>
+            <div class="sum-items-list" id="sumItemsList"></div>
+            <div class="sum-row"><span>সাব-টোটাল</span><span id="sumSub">—</span></div>
+            <div class="ship" id="shipping" role="radiogroup" aria-label="ডেলিভারি"></div>
+            <div class="sum-row"><span>ডেলিভারি চার্জ</span><span id="sumShip">—</span></div>
+            <div class="sum-row total"><span>সর্বমোট</span><span id="sumTotal">—</span></div>
+            <p class="pay-note" id="payNote">ক্যাশ অন ডেলিভারি – পণ্য হাতে পেয়ে টাকা দিন।</p>
+          </div>
+          <input type="text" name="website" id="hp" tabindex="-1" autocomplete="off" aria-hidden="true" class="hp">
+          <button type="submit" class="btn-submit" id="submitBtn"><span class="spin" aria-hidden="true"></span><span id="submitLabel">অর্ডার কনফার্ম করুন</span></button>
+          <div class="form-msg" id="formMsg" role="status" aria-live="polite"></div>
+        </aside>
+      </div>
+    </form>
+  </div>
+</section>
+
+<!-- 13. Footer -->
+<footer class="s-footer" data-sec="footer">
+  <p id="footMsg"></p>
+  <p class="links" id="legalLinks"><a href="#" id="lnkPrivacy">Privacy Policy</a> | <a href="#" id="lnkTerms">Terms &amp; Conditions</a></p>
+  <p class="credit" id="footCredit"></p>
+</footer>
+
+<script src="js/config.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

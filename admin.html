@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>অ্যাডমিন প্যানেল – ওয়েবসাইট ম্যানেজার</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--green:#0E5A3E;--green2:#17805A;--mint:#EAF8EF;--amber:#FFB400;--amber2:#FF8A00;--cream:#FFF7E3;--ink:#2A1C10;--mut:#7a6a55;--line:#eadfc2;--red:#d4291f;--card:#fff;--r:14px;--sh:0 4px 14px rgba(60,35,5,.08)}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{font-family:"Hind Siliguri","Noto Sans Bengali",system-ui,sans-serif;background:var(--cream);color:var(--ink);font-size:15px;line-height:1.5;min-height:100vh}
+button{font-family:inherit;cursor:pointer}
+input,textarea,select{font:inherit;color:inherit}
+[hidden]{display:none!important}
+:focus-visible{outline:3px solid #1a73e8;outline-offset:2px}
+
+/* ---------- login ---------- */
+.login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:radial-gradient(circle at 50% 0,#fff,var(--cream) 70%)}
+.login-card{width:100%;max-width:400px;background:#fff;border:2px solid #e3a62a;border-radius:20px;padding:28px 24px;box-shadow:0 14px 40px rgba(60,35,5,.15);text-align:center}
+.login-card .logo{font-size:44px;line-height:1}
+.login-card h1{font-size:1.4rem;margin:8px 0 2px;color:var(--green)}
+.login-card p{color:var(--mut);font-size:.9rem;margin-bottom:16px}
+.login-card input{width:100%;padding:12px 14px;border:1.5px solid #ddd0ad;border-radius:12px;font-size:1rem;margin-bottom:12px;background:#fffefa}
+.login-card input:focus{outline:0;border-color:var(--green);box-shadow:0 0 0 3px rgba(23,128,90,.2)}
+.err-box{background:#fdf2e9;border:1.5px solid #f5b796;color:#9c2a0c;border-radius:10px;padding:9px 12px;font-size:.88rem;margin-bottom:12px;text-align:left}
+
+/* ---------- buttons ---------- */
+.btn{border:0;border-radius:10px;padding:9px 16px;font-weight:600;font-size:.92rem;background:#efe6d2;color:var(--ink);transition:transform .1s,background .15s}
+.btn:hover{background:#e6d9b8}
+.btn:active{transform:translateY(1px)}
+.btn.pri{background:linear-gradient(180deg,#17a06e,var(--green));color:#fff;box-shadow:0 3px 0 #0a3f2b}
+.btn.pri:hover{background:linear-gradient(180deg,#1bb07a,var(--green2))}
+.btn.amb{background:linear-gradient(180deg,#FFC93C,var(--amber2));color:#2b1a0c;box-shadow:0 3px 0 #b25e00}
+.btn.ghost{background:#fff;border:1.5px dashed #cdbb8a;color:var(--green)}
+.btn.ghost:hover{background:var(--mint)}
+.btn.danger{background:#fee2e2;color:#991b1b}
+.btn.block{width:100%;padding:12px}
+.btn[disabled]{opacity:.6;cursor:not-allowed}
+.ib{width:32px;height:32px;border:0;border-radius:8px;background:#f4ecd8;font-size:.95rem;display:inline-flex;align-items:center;justify-content:center;flex:none}
+.ib:hover{background:#e9dcb8}
+.ib:disabled{opacity:.35;cursor:default}
+
+/* ---------- top bar ---------- */
+.top{position:sticky;top:0;z-index:30;background:linear-gradient(135deg,var(--green),var(--green2));color:#fff;box-shadow:0 3px 12px rgba(0,0,0,.2)}
+.top-in{max-width:960px;margin:auto;padding:10px 14px;display:flex;align-items:center;gap:10px}
+.brand{font-weight:700;font-size:1.1rem;display:flex;align-items:center;gap:8px;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brand small{font-weight:400;opacity:.85;font-size:.78rem;display:block;line-height:1.1}
+.top .btn{padding:8px 12px;font-size:.85rem}
+.top .btn.save{background:linear-gradient(180deg,#FFC93C,var(--amber2));color:#2b1a0c;box-shadow:0 3px 0 #b25e00;font-weight:700}
+.top .btn.save.dirty{animation:nudge 1.6s ease-in-out infinite}
+@keyframes nudge{50%{scale:1.06}}
+.top .btn.lite{background:rgba(255,255,255,.18);color:#fff}
+.top .btn.lite:hover{background:rgba(255,255,255,.3)}
+
+
+.tabs-in{max-width:960px;margin:auto;display:flex;gap:4px;padding:6px 10px;overflow-x:auto;scrollbar-width:none}
+.tabs-in::-webkit-scrollbar{display:none}
+.tab{border:0;background:transparent;padding:8px 14px;border-radius:10px;font-weight:600;color:var(--mut);white-space:nowrap;font-size:.95rem}
+.tab:hover{background:var(--cream)}
+.tab.on{background:var(--mint);color:var(--green)}
+
+.wrap{max-width:960px;margin:auto;padding:16px 12px 90px}
+.hint{background:#fff8e1;border:1.5px solid #f3dc8c;border-radius:12px;padding:10px 14px;font-size:.88rem;color:#6b5420;margin-bottom:14px}
+.hint b{color:#4d3a10}
+
+/* ---------- section cards ---------- */
+.sec{background:var(--card);border:1.5px solid var(--line);border-radius:var(--r);margin-bottom:10px;box-shadow:var(--sh);overflow:hidden;transition:opacity .2s}
+.sec.off{opacity:.62;background:#faf6ea}
+.sec-h{display:flex;align-items:center;gap:10px;padding:10px 12px;cursor:pointer;user-select:none}
+.sec-ic{width:38px;height:38px;border-radius:11px;background:var(--mint);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex:none}
+.sec.off .sec-ic{background:#eee}
+.sec-t{flex:1;min-width:0}
+.sec-t b{display:block;font-size:1rem;line-height:1.25}
+.sec-t span{display:block;font-size:.8rem;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sec-act{display:flex;align-items:center;gap:6px;flex:none}
+.chev{transition:transform .2s;color:var(--mut);font-size:.8rem}
+.sec.open .chev{transform:rotate(180deg)}
+.sec-b{display:none;padding:4px 14px 16px;border-top:1px dashed var(--line);background:#fffdf8}
+.sec.open .sec-b{display:block}
+.badge{font-size:.72rem;background:var(--mint);color:var(--green);padding:2px 8px;border-radius:20px;font-weight:600}
+
+/* ---------- switch ---------- */
+.sw{display:inline-flex;align-items:center;gap:8px;cursor:pointer;user-select:none}
+.sw input{position:absolute;opacity:0;width:0;height:0}
+.sw-t{width:44px;height:25px;border-radius:25px;background:#cfc6b0;position:relative;transition:background .2s;flex:none}
+.sw-t::after{content:"";position:absolute;top:3px;left:3px;width:19px;height:19px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:transform .2s}
+.sw input:checked+.sw-t{background:var(--green2)}
+.sw input:checked+.sw-t::after{transform:translateX(19px)}
+.sw input:focus-visible+.sw-t{outline:3px solid #1a73e8;outline-offset:2px}
+.sw-l{font-size:.85rem;font-weight:600}
+
+/* ---------- fields ---------- */
+.fld{margin-top:12px}
+.fld label{display:block;font-weight:600;font-size:.88rem;margin-bottom:4px}
+.fld input,.fld textarea,.fld select{width:100%;border:1.5px solid #ddd0ad;border-radius:10px;padding:9px 12px;background:#fff;font-size:.95rem}
+.fld input:focus,.fld textarea:focus,.fld select:focus{outline:0;border-color:var(--green);box-shadow:0 0 0 3px rgba(23,128,90,.18)}
+.fld small{display:block;color:var(--mut);font-size:.78rem;margin-top:3px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+@media(max-width:560px){.row2,.row3{grid-template-columns:1fr}}
+.sub-h{font-weight:700;color:var(--green);margin:18px 0 0;font-size:.95rem;display:flex;align-items:center;gap:6px}
+.sub-h::before{content:"";width:4px;height:16px;border-radius:3px;background:linear-gradient(var(--amber),var(--amber2))}
+
+/* ---------- lists ---------- */
+.list{display:grid;gap:8px;margin-top:6px}
+.li{display:flex;gap:8px;align-items:flex-start;background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:8px}
+.li .th{width:46px;height:46px;border-radius:8px;object-fit:cover;background:#eee;flex:none;border:1px solid var(--line)}
+.li .th.bad{opacity:.25}
+.li input,.li textarea{flex:1;min-width:0;border:1.5px solid #ddd0ad;border-radius:8px;padding:8px 10px;background:#fffefa;font-size:.9rem}
+.li input:focus,.li textarea:focus{outline:0;border-color:var(--green)}
+.li-b{display:flex;gap:4px;flex:none}
+@media(max-width:560px){.li{flex-wrap:wrap}.li input,.li textarea{flex:1 1 100%;order:3}.li-b{margin-left:auto}}
+.prod{background:#fff;border:1.5px solid var(--line);border-radius:var(--r);padding:12px;margin-bottom:10px;box-shadow:var(--sh)}
+.prod.off{opacity:.6;background:#faf6ea}
+.prod-h{display:flex;align-items:center;gap:8px;margin-bottom:2px}
+.prod-h .th{width:54px;height:54px;border-radius:10px;object-fit:cover;background:#eee;border:1px solid var(--line);flex:none}
+.prod-h .th.bad{opacity:.25}
+.prod-h b{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.prod-h code{font-size:.72rem;color:var(--mut);background:#f4ecd8;padding:1px 6px;border-radius:6px}
+.mt{margin-top:14px}
+
+/* ---------- orders ---------- */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+@media(max-width:640px){.stats{grid-template-columns:repeat(2,1fr)}}
+.stat{background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;text-align:center}
+.stat b{display:block;font-size:1.35rem;color:var(--green);line-height:1.2}
+.stat span{font-size:.78rem;color:var(--mut)}
+.ord{background:#fff;border:1.5px solid var(--line);border-radius:var(--r);padding:12px;margin-bottom:10px;box-shadow:var(--sh)}
+.ord-h{display:flex;justify-content:space-between;gap:8px;align-items:flex-start;flex-wrap:wrap}
+.ord-h b{font-size:1rem}
+.ord-h small{color:var(--mut)}
+.ord-b{display:grid;grid-template-columns:1fr 1fr;gap:6px 14px;margin-top:8px;font-size:.88rem}
+@media(max-width:560px){.ord-b{grid-template-columns:1fr}}
+.ord-b div span{color:var(--mut);font-size:.76rem;display:block}
+.ord-b .full{grid-column:1/-1}
+.ord-b pre{font-family:inherit;white-space:pre-wrap;word-break:break-word}
+.ord-t{font-weight:700;color:var(--green)}
+.st{border:0;border-radius:20px;padding:5px 10px;font-weight:700;font-size:.82rem}
+.st.New{background:#FEF3C7;color:#92400E}.st.Processing{background:#DBEAFE;color:#1E40AF}.st.Delivered{background:#D1FAE5;color:#065F46}.st.Cancelled{background:#FEE2E2;color:#991B1B}
+.empty{text-align:center;color:var(--mut);padding:30px 10px}
+
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:640px){.cards{grid-template-columns:1fr}}
+.cbox{background:#fff;border:1.5px solid var(--line);border-radius:var(--r);padding:14px;box-shadow:var(--sh)}
+.cbox h3{font-size:1rem;color:var(--green);margin-bottom:4px}
+.cbox p{font-size:.85rem;color:var(--mut);margin-bottom:10px}
+
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(30px);background:#1e293b;color:#fff;padding:11px 18px;border-radius:12px;font-size:.92rem;opacity:0;pointer-events:none;transition:all .25s;z-index:100;max-width:92vw;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.3)}
+.toast.show{opacity:1;transform:translateX(-50%)}
+.toast.ok{background:#0f5132}.toast.bad{background:#9c2a0c}
+.spinner{display:inline-block;width:14px;height:14px;border:2.5px solid rgba(0,0,0,.2);border-top-color:#000;border-radius:50%;animation:sp .7s linear infinite;vertical-align:-2px;margin-right:6px}
+@keyframes sp{to{transform:rotate(360deg)}}
+@media(max-width:999px){}
+.colr{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;margin-top:10px}
+.colr label{display:flex;align-items:center;gap:10px;background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:8px 10px;font-size:.88rem;font-weight:600}
+.colr input[type=color]{width:42px;height:34px;border:0;padding:0;background:none;cursor:pointer;flex:none}
+.colr span small{display:block;font-weight:400;color:var(--mut);font-size:.74rem}
+.ib.pick{width:auto;padding:0 9px;font-size:.78rem;font-weight:600;white-space:nowrap}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ===== নতুন লেআউট: ডানদিকে সাইডবার ===== */
+.shell{display:flex;align-items:flex-start;min-height:100vh}
+.col{flex:1;min-width:0;order:1}
+.pv{width:400px;flex:none;position:sticky;top:0;height:100vh;order:2;background:#fff;border-left:2px solid var(--line);display:flex;flex-direction:column}
+.pv-h{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:var(--green);color:#fff}
+.pv iframe{flex:1;border:0;width:100%;background:#fff}
+.side{width:268px;flex:none;position:sticky;top:0;height:100vh;overflow:auto;background:#fff;border-left:1px solid var(--line);padding:14px 10px 50px;order:3}
+.side-h{display:flex;align-items:center;justify-content:space-between;font-weight:700;font-size:1.05rem;color:var(--green);padding:2px 6px 10px}
+.side-grp{font-size:.74rem;font-weight:700;color:var(--mut);letter-spacing:.3px;padding:14px 8px 6px}
+.si{display:flex;align-items:center;gap:9px;width:100%;border:0;background:transparent;padding:8px 9px;border-radius:10px;text-align:left;font-size:.92rem;font-weight:600;color:var(--ink)}
+.si:hover{background:var(--cream)}
+.si.on{background:var(--mint);color:var(--green)}
+.si .ic{width:26px;text-align:center;font-size:1.05rem;flex:none}
+.si .tx{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.si .dot{width:9px;height:9px;border-radius:50%;background:#22a06b;flex:none}
+.si .dot.off{background:#c9c0ac}
+.si.add{color:var(--green);border:1.5px dashed #cdbb8a;margin:8px 0 2px;justify-content:center}
+.scrim{display:none}
+#menuBtn{display:none}
+.ph{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:#fff;border:1.5px solid var(--line);border-radius:var(--r);padding:12px 14px;margin-bottom:12px;box-shadow:var(--sh)}
+.ph .sec-ic{flex:none}
+.ph h2{font-size:1.15rem;line-height:1.3}
+.ph p{font-size:.82rem;color:var(--mut)}
+.ph .grow{flex:1;min-width:140px}
+.pg{background:#fff;border:1.5px solid var(--line);border-radius:var(--r);padding:4px 16px 18px;box-shadow:var(--sh)}
+.pg.off{opacity:.65}
+.fld select{background:#fff}
+.cardbox{background:#fffdf8;border:1.5px solid var(--line);border-radius:12px;padding:10px;margin-top:8px}
+.cardbox .li-b{margin-top:6px}
+.cardrow{display:flex;gap:8px;align-items:center}
+.preset{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.pbtn{border:2px solid var(--line);background:#fff;border-radius:12px;padding:8px 10px;font-weight:600;font-size:.85rem;display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.pbtn:hover{border-color:var(--green)}
+.sw-strip{display:flex;height:16px;width:110px;border-radius:6px;overflow:hidden}
+.sw-strip i{flex:1}
+.tpl{width:100%;min-height:90px;font-family:Consolas,monospace;font-size:.78rem;border:1.5px solid #ddd0ad;border-radius:10px;padding:8px;background:#fffefa}
+ol.steps{padding-left:20px;line-height:1.9;font-size:.93rem}
+code{background:#f4ecd8;padding:1px 6px;border-radius:6px;font-size:.85em}
+.ord-row{display:flex;align-items:center;gap:8px;background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:8px 10px;margin-bottom:8px}
+.ord-row.off{opacity:.6}
+.ord-row .nm{flex:1;min-width:0;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+@media(max-width:999px){
+  .pv{display:none!important}
+  .side{position:fixed;right:0;top:0;bottom:0;z-index:70;transform:translateX(105%);transition:transform .25s;box-shadow:-10px 0 30px rgba(0,0,0,.25);width:min(86vw,300px)}
+  .side.open{transform:none}
+  .scrim.show{display:block;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:65}
+  #menuBtn{display:inline-flex}
+}
+</style>
+</head>
+<body>
+
+<div class="login" id="loginView">
+  <form class="login-card" id="loginForm" autocomplete="on">
+    <div class="logo">🍯</div>
+    <h1>অ্যাডমিন প্যানেল</h1>
+    <p>ওয়েবসাইটের কনটেন্ট, দাম, রং ও ছবি এখান থেকে নিয়ন্ত্রণ করুন</p>
+    <div class="err-box" id="loginErr" hidden></div>
+    <input type="text" name="username" value="admin" autocomplete="username" hidden aria-hidden="true" tabindex="-1">
+    <input type="password" id="pw" name="password" placeholder="পাসওয়ার্ড দিন" autocomplete="current-password" required>
+    <button class="btn pri block" id="loginBtn" type="submit">লগইন করুন</button>
+  </form>
+</div>
+
+<div class="shell" id="appView" hidden>
+  <div class="col">
+    <div class="top"><div class="top-in">
+      <div class="brand">🍯 <span>অ্যাডমিন প্যানেল<small id="dirtyTxt">কোনো পরিবর্তন নেই</small></span></div>
+      <button class="btn lite" id="previewBtn" type="button">👁 লাইভ প্রিভিউ</button>
+      <button class="btn save" id="saveBtn" type="button">⬇️ আপডেট ডাউনলোড</button>
+      <button class="btn lite" id="menuBtn" type="button" aria-label="মেনু">☰ মেনু</button>
+    </div></div>
+    <main class="wrap" id="main"></main>
+  </div>
+  <aside class="pv" id="pv" hidden><div class="pv-h"><b>👁 লাইভ প্রিভিউ</b><button class="ib" id="pvClose" type="button">✕</button></div><iframe id="pvFrame" title="Preview"></iframe></aside>
+  <aside class="side" id="side" aria-label="মেনু"></aside>
+</div>
+<div class="scrim" id="scrim"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="js/config.js"></script>
+<script>
+(function () {
+  "use strict";
+  var DEF = window.SITE_CONFIG || {};
+  var CODE_TPL = "/**\n * =========================================================================\n * খাঁটি মধু ও প্রিমিয়াম হানি নাট – অর্ডার ব্যাকএন্ড (Google Apps Script)\n * কাজ: অর্ডার, ভিজিটর অ্যাক্টিভিটি ও Pixel ইভেন্ট গুগল শিটে সংরক্ষণ (Orders, User Activity, Pixel Events, Report, Dashboard)\n * ওয়েবসাইটের কনটেন্ট/দাম পরিবর্তনের জন্য এখানে কিছু করতে হয় না – সেটা admin.html থেকে হয়।\n * =========================================================================\n *\n * 🚀 সেটআপ (একবারই):\n *    ১. গুগল শিট খুলুন ➔ Extensions ➔ Apps Script\n *    ২. পুরো কোড মুছে এই ফাইলের সব কোড পেস্ট করুন\n *    ৩. নিচে SPREADSHEET_ID ও SITE_URL ঠিক আছে কিনা দেখে Save (💾) করুন\n *    ৪. ড্রপডাউন থেকে \"setupAll\" সিলেক্ট করে ▶ Run চাপুন (Permission দিন)\n *    ৫. Deploy ➔ Manage deployments ➔ ✏️ ➔ Version: New version ➔ Deploy\n *       (নতুন করে করলে: New deployment ➔ Web app ➔ Execute as: Me ➔ Access: Anyone,\n *        তারপর /exec লিংক js/config.js এর apiEndpoint এ বসান)\n * =========================================================================\n */\n\n\n/* =========================================================================\n   ১. সেটিংস (শুধু এই অংশ এডিট করুন)\n   ========================================================================= */\n\n// আপনার গুগল শিটের লিংক অথবা আইডি (admin.html এর \"Google Sheet ও API\" পেজ থেকে Code.gs তৈরি করলে এটি নিজেই বসে যায়)\n// খালি রাখলে: যে শিট থেকে Extensions → Apps Script খুলেছেন সেটিই ব্যবহার হবে\nvar SPREADSHEET_ID = \"\";\n\n// 🌐 আপনার Vercel ওয়েবসাইটের লিংক (যেমন: https://my-honey.vercel.app)\n//    এটি দিলে অর্ডারের দাম সবসময় ওয়েবসাইটের js/config.js থেকে যাচাই হয়, তাই\n//    admin.html এ দাম বদলালে এখানে আলাদা করে কিছু বদলাতে হয় না।\n//    খালি রাখলে নিচের ডিফল্ট দাম (PRODUCTS_CONFIG) ব্যবহার হবে।\nvar SITE_URL = \"\";\n\n// অর্ডার জমা হওয়ার ট্যাবের নাম\nvar SHEET_NAME = \"Orders\";\n\n// টাকার প্রতীক ও টাইমজোন\nvar CURRENCY = \"৳\";\nvar TIMEZONE = \"Asia/Dhaka\";\n\n// ফ্রড/স্প্যাম প্রটেকশন: একই নাম্বার থেকে কত মিনিট পর আবার অর্ডার করা যাবে\nvar FRAUD_PROTECTION = { enabled: true, cooldownMinutes: 2 };   // একই নাম্বারে ২ মিনিটের মধ্যে আবার অর্ডার করলে ফ্রড এলার্ট\n\n// ভিজিটর ট্র্যাকিং: প্রতি মিনিটে সর্বোচ্চ কতটি ট্র্যাকিং রিকোয়েস্ট নেওয়া হবে (অর্ডারকে অগ্রাধিকার দিতে)\nvar TRACK_LIMIT_PER_MIN = 90;\n\n\n/* =========================================================================\n   ২. ডিফল্ট পণ্য ও ডেলিভারি (SITE_URL খালি থাকলে এগুলোই ব্যবহার হবে)\n   ========================================================================= */\nvar PRODUCTS_CONFIG = {\n  \"m500\":   { name: \"খাঁটি মধু – ৫০০ গ্রাম\",                         price: 550 },\n  \"m1000\":  { name: \"খাঁটি মধু – ১ কেজি\",                            price: 1050 },\n  \"hn500\":  { name: \"প্রিমিয়াম হানি নাট – ৫০০ গ্রাম\",                 price: 650 },\n  \"hn1000\": { name: \"প্রিমিয়াম হানি নাট – ১ কেজি\",                    price: 1250 },\n  \"combo\":  { name: \"মেগা কম্বো (১ কেজি মধু + ১ কেজি হানি নাট)\",      price: 2200 }\n};\nvar SHIPPING_CONFIG = {\n  \"dhaka\":   { label: \"ঢাকার ভিতরে\",  charge: 60 },\n  \"outside\": { label: \"ঢাকার বাইরে\", charge: 120 }\n};\nvar FREE_SHIPPING_MIN_TOTAL = 0;\nvar MAX_QTY_PER_ITEM = 20;\n\n\n/* =========================================================================\n   ৩. শিটের কলাম ও স্ট্যাটাস\n   ========================================================================= */\nvar HEADERS = [\n  \"Order ID\", \"Date & Time\", \"Customer Name\", \"Phone Number\", \"District / Area\",\n  \"Full Address\", \"Ordered Products\", \"Total Items (Qty)\", \"Products Subtotal\",\n  \"Delivery Method\", \"Delivery Charge\", \"Grand Total Bill\", \"Customer Note\", \"Order Status\", \"Traffic Source\"\n];\nvar COL_WIDTHS = [140, 165, 170, 130, 125, 250, 280, 100, 130, 125, 120, 140, 190, 120, 160];\nvar STATUS_COL = 14;                  // Order Status কলামের নম্বর (N)\nvar STATUSES = [\"New\", \"Processing\", \"Delivered\", \"Cancelled\"];\nvar FORMAT_ROWS = 3000;               // কতগুলো সারি আগে থেকেই সুন্দর ফরম্যাটে রাখা হবে\nvar DASH_SHEET = \"Dashboard\";\nvar ACT_SHEET = \"User Activity\";\nvar PIX_SHEET = \"Pixel Events\";\nvar REPORT_SHEET = \"Report\";\n\n\n/* =========================================================================\n   ৪. একবার চালানোর সেটআপ (\"setupAll\" সিলেক্ট করে ▶ Run)\n   ========================================================================= */\nfunction setupAll() {\n  var ss = getSS_();\n  try { ss.setSpreadsheetTimeZone(TIMEZONE); } catch (e) {}\n  var sheet = getSheet_();\n  formatOrderSheet_(sheet);\n  getActivitySheet_(ss, true);\n  getPixelSheet_(ss, true);\n  buildReport_(ss);\n  buildDashboard_(ss);\n  try {   // ট্যাবের ক্রম: Orders, User Activity, Pixel Events, Report, Dashboard\n    [SHEET_NAME, ACT_SHEET, PIX_SHEET, REPORT_SHEET, DASH_SHEET].forEach(function (n, i) {\n      var sh = ss.getSheetByName(n); if (sh) { ss.setActiveSheet(sh); ss.moveActiveSheet(i + 1); }\n    });\n  } catch (e2) {}\n  SpreadsheetApp.flush();\n  Logger.log(\"✅ সেটআপ সম্পন্ন! Orders, User Activity, Pixel Events, Report ও Dashboard ট্যাব প্রস্তুত। এবার Deploy করুন।\");\n}\nfunction runFormatDesign() { setupAll(); }   // পুরোনো নামও কাজ করবে\n\n\n/* =========================================================================\n   ৫. GET (শুধু স্ট্যাটাস) ও POST (অর্ডার গ্রহণ)\n   ========================================================================= */\nfunction doGet() {\n  return json_({ success: true, message: \"Order API চালু আছে ✅\", time: new Date().toISOString() });\n}\n\nfunction doPost(e) {\n  var data;\n  try {\n    data = JSON.parse((e && e.postData && e.postData.contents) || \"{}\");\n  } catch (err) {\n    return json_({ success: false, error: \"রিকোয়েস্ট সঠিক নয়।\" });\n  }\n  if (data && data.action === \"track\") return handleTrack_(data);\n  return handleOrder_(data);\n}\n\n/* ---------- অর্ডার ---------- */\nfunction bnNum_(n) { return String(n).replace(/\\d/g, function (d) { return \"০১২৩৪৫৬৭৮৯\"[d]; }); }\n\nfunction fraudResponse_(phone, existing, minutes) {\n  return json_({\n    success: false, fraudAlert: true,\n    error: \"⚠️ ফ্রড এলার্ট (Fraud Alert): এই মোবাইল নাম্বার (\" + phone + \") দিয়ে কিছুক্ষণ আগেই একটি অর্ডার (\" + existing + \") গ্রহণ করা হয়েছে। আপনার অর্ডারটি প্রক্রিয়াধীন রয়েছে, বারবার অর্ডার পাঠানোর প্রয়োজন নেই। প্রয়োজনে সরাসরি আমাদের নাম্বারে কল করুন। (\" + bnNum_(minutes) + \" মিনিট পর আবার অর্ডার করা যাবে)\"\n  });\n}\n\nfunction handleOrder_(data) {\n  var cache = CacheService.getScriptCache();\n  try {\n    // ১) লক ছাড়াই যাচাই (যাতে লকের ভেতরের কাজ খুব ছোট থাকে)\n    var cfg = getLiveConfig_();\n    var validationError = validateOrder_(data, cfg);\n    if (validationError) return json_({ success: false, error: validationError });\n\n    var reqId = String(data.reqId || \"\").replace(/[^A-Za-z0-9_-]/g, \"\").slice(0, 40);\n    if (reqId) {                                       // একই অর্ডার রিট্রাই হলে আবার সেভ হবে না\n      var done = cache.get(\"req_\" + reqId);\n      if (done) return ContentService.createTextOutput(done).setMimeType(ContentService.MimeType.JSON);\n    }\n\n    var cleanPhone = normPhone_(data.phone);\n    var minutes = Math.max(1, Number(cfg.fraudMinutes) || FRAUD_PROTECTION.cooldownMinutes);\n    var fraudKey = \"honey_guard_\" + cleanPhone;\n    if (FRAUD_PROTECTION && FRAUD_PROTECTION.enabled) {\n      var existing = cache.get(fraudKey);\n      if (existing) return fraudResponse_(cleanPhone, existing, minutes);\n    }\n\n    var items = parseOrderedItems_(data, cfg);\n    if (!items.length) return json_({ success: false, error: \"অনুগ্রহ করে কমপক্ষে একটি পণ্য সিলেক্ট করুন।\" });\n\n    // দাম সবসময় সার্ভারের কনফিগ থেকে (কাস্টমার ব্রাউজার থেকে নয়)\n    var subtotal = 0, totalQty = 0, lines = [];\n    for (var i = 0; i < items.length; i++) {\n      var it = items[i], prod = cfg.products[it.id];\n      var lineTotal = prod.price * it.qty;\n      subtotal += lineTotal; totalQty += it.qty;\n      lines.push(prod.name + \" (\" + it.qty + \"টি - \" + CURRENCY + lineTotal + \")\");\n    }\n    var shipInfo = cfg.shipping[data.shippingId];\n    var shipCharge = shipInfo.charge;\n    if (cfg.freeShippingMin > 0 && subtotal >= cfg.freeShippingMin) shipCharge = 0;\n    var grand = subtotal + shipCharge;\n\n    // ২) একসাথে অনেকে অর্ডার করলে লাইনে দাঁড়িয়ে একটি একটি করে সেভ হবে\n    var lock = LockService.getScriptLock();\n    if (!lock.tryLock(25000)) {\n      return json_({ success: false, busy: true, error: \"এই মুহূর্তে অনেকে অর্ডার করছেন। কয়েক সেকেন্ড অপেক্ষা করুন, নিজে থেকেই আবার চেষ্টা হবে।\" });\n    }\n    try {\n      if (reqId) {\n        var done2 = cache.get(\"req_\" + reqId);\n        if (done2) return ContentService.createTextOutput(done2).setMimeType(ContentService.MimeType.JSON);\n      }\n      if (FRAUD_PROTECTION && FRAUD_PROTECTION.enabled) {\n        var existing2 = cache.get(fraudKey);\n        if (existing2) return fraudResponse_(cleanPhone, existing2, minutes);\n      }\n\n      var sheet = getSheet_();\n      var orderId = nextOrderId_();\n      var row = sheet.getLastRow() + 1;\n      ensureCapacity_(sheet, row);\n\n      var rowValues = [\n        orderId, new Date(), clean_(data.name, 100), cleanPhone, clean_(data.district, 80), clean_(data.address, 350),\n        lines.join(\",\\n\"), totalQty, subtotal, shipInfo.label, shipCharge, grand,\n        clean_(data.note || \"কোনো নোট নেই\", 300), \"New\", clean_(data.source || \"direct\", 80)\n      ];\n      sheet.getRange(row, 4).setNumberFormat(\"@\");                     // ফোনের শুরুর ০ যেন না কাটে\n      sheet.getRange(row, 1, 1, HEADERS.length).setValues([rowValues]);\n\n      var result = { success: true, orderId: orderId, subtotal: subtotal, deliveryCharge: shipCharge, total: grand, itemsCount: totalQty, message: \"আপনার অর্ডারটি সফলভাবে গ্রহণ করা হয়েছে!\" };\n      try { cache.put(fraudKey, orderId, Math.max(60, minutes * 60)); } catch (c1) {}\n      if (reqId) { try { cache.put(\"req_\" + reqId, JSON.stringify(result), 600); } catch (c2) {} }\n      return json_(result);\n    } finally {\n      try { lock.releaseLock(); } catch (x) {}\n    }\n  } catch (err) {\n    return json_({ success: false, error: \"সার্ভারে সাময়িক সমস্যা হয়েছে: \" + err.message });\n  }\n}\n\n\n/* =========================================================================\n   ভিজিটর অ্যাক্টিভিটি ও Pixel ইভেন্ট সংরক্ষণ (অর্ডারের লকের সাথে সম্পর্কহীন – অর্ডার ধীর হয় না)\n   ========================================================================= */\nvar PIXEL_EVENTS = { PageView: 1, ViewContent: 1, AddToCart: 1, InitiateCheckout: 1, Purchase: 1 };\n\nfunction yn_(v) { return v ? \"Yes\" : \"No\"; }\nfunction num_(v, max) { var n = Number(v); return isNaN(n) ? 0 : Math.max(0, Math.min(max || 1e9, Math.round(n))); }\n\nfunction handleTrack_(d) {\n  var sid = String(d.sid || \"\").replace(/[^A-Za-z0-9_-]/g, \"\").slice(0, 40);\n  var a = d.a;\n  if (!sid || !a || typeof a !== \"object\") return json_({ success: true, skipped: true });\n\n  var cache = CacheService.getScriptCache();\n  var mk = \"trk_\" + Utilities.formatDate(new Date(), TIMEZONE, \"yyMMddHHmm\");\n  var n = parseInt(cache.get(mk) || \"0\", 10);\n  if (n >= TRACK_LIMIT_PER_MIN) return json_({ success: true, skipped: true });\n  try { cache.put(mk, String(n + 1), 90); } catch (e0) {}\n\n  var lock = LockService.getDocumentLock();            // অর্ডারের (Script) লক থেকে আলাদা\n  if (!lock.tryLock(4000)) return json_({ success: true, skipped: true });\n  try {\n    var ss = getSS_(), now = new Date();\n    var act = getActivitySheet_(ss, false);\n    var evNames = [];\n    var evs = Array.isArray(d.ev) ? d.ev.slice(0, 20) : [];\n    for (var k = 0; k < evs.length; k++) if (evs[k] && PIXEL_EVENTS[evs[k].n]) evNames.push(evs[k].n);\n\n    var cached = cache.get(\"act_\" + sid);\n    var vals = [\n      now, sid, clean_(a.src || \"direct\", 80), clean_(a.med, 60), clean_(a.camp, 80), clean_(a.ref, 80), clean_(a.dev, 20), clean_(a.scr, 20),\n      clean_(a.land || \"/\", 80), num_(a.scroll, 100), num_(a.secs, 86400), num_(a.cta, 999), yn_(a.vs), yn_(a.chk), yn_(a.form), yn_(a.ord), clean_(a.oid, 40),\n      \"\", now\n    ];\n    var row = cached ? parseInt(cached.split(\"|\")[0], 10) : 0;\n    var seen = cached ? cached.split(\"|\").slice(1).join(\"|\") : \"\";\n    if (row > 1 && String(act.getRange(row, 2).getValue()) === sid) {\n      var merged = (seen ? seen.split(\",\") : []).concat(evNames);\n      vals[17] = merged.join(\",\");\n      act.getRange(row, 2, 1, vals.length - 1).setValues([vals.slice(1)]);\n      try { cache.put(\"act_\" + sid, row + \"|\" + vals[17], 21600); } catch (e1) {}\n    } else {\n      row = act.getLastRow() + 1;\n      ensureRows_(act, row, function (start, cnt) { fmtActivity_(act, start, cnt); });\n      vals[17] = evNames.join(\",\");\n      act.getRange(row, 1, 1, vals.length).setValues([vals]);\n      try { cache.put(\"act_\" + sid, row + \"|\" + vals[17], 21600); } catch (e2) {}\n    }\n\n    var out = [];\n    for (var m = 0; m < evs.length; m++) {\n      var ev = evs[m];\n      if (!ev || !PIXEL_EVENTS[ev.n]) continue;\n      out.push([now, sid, ev.n, num_(ev.v, 1e8), \"BDT\", clean_(ev.c, 80), clean_(ev.o, 40), clean_(a.src || \"direct\", 80), clean_(a.dev, 20)]);\n    }\n    if (out.length) {\n      var pix = getPixelSheet_(ss, false), pr = pix.getLastRow() + 1;\n      ensureRows_(pix, pr + out.length, function (start, cnt) { fmtPixel_(pix, start, cnt); });\n      pix.getRange(pr, 1, out.length, 9).setValues(out);\n    }\n    return json_({ success: true });\n  } catch (err) {\n    return json_({ success: false, error: \"tracking: \" + err.message });\n  } finally {\n    try { lock.releaseLock(); } catch (x) {}\n  }\n}\n\n\n/* =========================================================================\n   ৬. দাম ও ডেলিভারি যাচাই (ওয়েবসাইটের js/config.js থেকে – এক জায়গা থেকেই সব)\n   ========================================================================= */\nfunction defaultLiveConfig_() {\n  var products = {}, shipping = {}, k;\n  for (k in PRODUCTS_CONFIG) products[k] = { name: PRODUCTS_CONFIG[k].name, price: PRODUCTS_CONFIG[k].price, active: true };\n  for (k in SHIPPING_CONFIG) shipping[k] = { label: SHIPPING_CONFIG[k].label, charge: SHIPPING_CONFIG[k].charge };\n  return { products: products, shipping: shipping, freeShippingMin: FREE_SHIPPING_MIN_TOTAL, maxQty: MAX_QTY_PER_ITEM, fraudMinutes: FRAUD_PROTECTION.cooldownMinutes };\n}\n\nfunction getLiveConfig_() {\n  var url = String(SITE_URL || \"\").replace(/\\/+$/, \"\");\n  if (!url) return defaultLiveConfig_();\n\n  var cache = CacheService.getScriptCache();\n  var hit = cache.get(\"live_cfg\");\n  if (hit) { try { return JSON.parse(hit); } catch (e) {} }\n\n  try {\n    var res = UrlFetchApp.fetch(url + \"/js/config.js?t=\" + new Date().getTime(), { muteHttpExceptions: true });\n    if (res.getResponseCode() !== 200) throw new Error(\"config.js পাওয়া যায়নি (\" + res.getResponseCode() + \")\");\n    var txt = res.getContentText();\n    var c = JSON.parse(txt.substring(txt.indexOf(\"{\"), txt.lastIndexOf(\"}\") + 1));\n\n    var out = defaultLiveConfig_();\n    if (c.products && c.products.length) {\n      out.products = {};\n      for (var i = 0; i < c.products.length; i++) {\n        var p = c.products[i];\n        if (!p || !p.id) continue;\n        out.products[p.id] = { name: String(p.name || p.id), price: Number(p.price) || 0, active: p.active !== false };\n      }\n    }\n    if (c.shipping && c.shipping.length) {\n      out.shipping = {};\n      for (var j = 0; j < c.shipping.length; j++) {\n        var sh = c.shipping[j];\n        if (!sh || !sh.id) continue;\n        out.shipping[sh.id] = { label: String(sh.label || sh.id), charge: Number(sh.charge) || 0 };\n      }\n    }\n    if (c.freeShippingMinTotal !== undefined) out.freeShippingMin = Number(c.freeShippingMinTotal) || 0;\n    if (c.maxQty !== undefined) out.maxQty = Number(c.maxQty) || MAX_QTY_PER_ITEM;\n    if (c.fraudMinutes !== undefined) out.fraudMinutes = Number(c.fraudMinutes) || FRAUD_PROTECTION.cooldownMinutes;\n    try { cache.put(\"live_cfg\", JSON.stringify(out), 60); } catch (e2) {}\n    return out;\n  } catch (err) {\n    return defaultLiveConfig_();       // ওয়েবসাইট না পেলে ডিফল্ট দাম\n  }\n}\n\n\n/* =========================================================================\n   ৭. অর্ডার সংক্রান্ত ফাংশন\n   ========================================================================= */\nfunction parseOrderedItems_(d, cfg) {\n  var items = [];\n  if (Array.isArray(d.items)) {\n    for (var i = 0; i < d.items.length; i++) {\n      var it = d.items[i];\n      if (it && it.id && cfg.products[it.id] && cfg.products[it.id].active) {\n        var q = parseInt(it.qty, 10);\n        if (!isNaN(q) && q > 0) items.push({ id: it.id, qty: Math.min(q, cfg.maxQty) });\n      }\n    }\n  }\n  return items;\n}\n\nfunction validateOrder_(d, cfg) {\n  if (!d || typeof d !== \"object\") return \"অর্ডার রিকোয়েস্ট সঠিক নয়।\";\n  if (!d.name || String(d.name).trim().length < 2) return \"অনুগ্রহ করে আপনার সঠিক নাম লিখুন।\";\n  if (!/^01[3-9]\\d{8}$/.test(normPhone_(d.phone))) return \"১১ ডিজিটের সঠিক মোবাইল নাম্বার দিন (যেমন: 01712345678)।\";\n  if (!d.district || String(d.district).trim().length < 2) return \"আপনার জেলা বা এলাকার নাম দিন।\";\n  if (!d.address || String(d.address).trim().length < 6) return \"সম্পূর্ণ বিস্তারিত ঠিকানা লিখুন।\";\n  if (!cfg.shipping[d.shippingId]) return \"ডেলিভারি এলাকা নির্বাচন সঠিক নয়।\";\n  return null;\n}\n\nfunction normPhone_(v) {\n  var s = String(v || \"\").replace(/[\\s\\-()]/g, \"\");\n  s = s.replace(/[০-৯]/g, function (c) { return \"০১২৩৪৫৬৭৮৯\".indexOf(c); });\n  return s.replace(/^\\+?88/, \"\");\n}\n\nfunction clean_(v, maxLen) {\n  var s = String(v == null ? \"\" : v).replace(/[\\u0000-\\u001f]+/g, \" \").trim();\n  if (maxLen && s.length > maxLen) s = s.substring(0, maxLen);\n  return /^[=+\\-@]/.test(s) ? \"'\" + s : s;       // শিট ফর্মুলা ইনজেকশন প্রতিরোধ\n}\n\nfunction nextOrderId_() {\n  var day = Utilities.formatDate(new Date(), TIMEZONE, \"yyMMdd\");\n  var props = PropertiesService.getScriptProperties();\n  var key = \"seq_\" + day;\n  var n = parseInt(props.getProperty(key) || \"0\", 10) + 1;\n  props.setProperty(key, String(n));\n  return \"HN-\" + day + \"-\" + (\"000\" + n).slice(-4);\n}\n\n\n/* =========================================================================\n   ৮. গুগল শিট কানেকশন ও সুন্দর ফরম্যাটিং\n   ========================================================================= */\nfunction getSS_() {\n  var rawId = String(SPREADSHEET_ID || \"\").trim(), ss;\n  if (rawId) {\n    var m = rawId.match(/\\/d\\/([a-zA-Z0-9-_]+)/);\n    try { ss = SpreadsheetApp.openById(m ? m[1] : rawId); }\n    catch (e) { throw new Error(\"SPREADSHEET_ID ভুল বা অনুমতি নেই। (\" + e.message + \")\"); }\n  } else {\n    ss = SpreadsheetApp.getActiveSpreadsheet();\n  }\n  if (!ss) throw new Error(\"গুগল শিট পাওয়া যায়নি। SPREADSHEET_ID দিন।\");\n  return ss;\n}\n\nfunction getSheet_() {\n  var ss = getSS_();\n  var sheet = ss.getSheetByName(SHEET_NAME);\n  if (!sheet) {\n    var all = ss.getSheets();\n    if (all.length && all[0].getLastRow() <= 1 && all[0].getName() !== DASH_SHEET) {\n      all[0].setName(SHEET_NAME);\n      sheet = all[0];\n    }\n  }\n  if (!sheet) sheet = ss.insertSheet(SHEET_NAME);\n\n  if (sheet.getLastRow() === 0 || String(sheet.getRange(1, 1).getValue()) !== HEADERS[0]) {\n    if (sheet.getLastRow() === 0) {\n      sheet.getRange(1, 1, 1, HEADERS.length).setValues([HEADERS]);\n      formatOrderSheet_(sheet);\n      try { buildDashboard_(ss); } catch (e) {}\n    } else {\n      sheet.getRange(1, 1, 1, HEADERS.length).setValues([HEADERS]);\n    }\n  }\n  return sheet;\n}\n\nfunction ensureCapacity_(sheet, row) {\n  var max = sheet.getMaxRows();\n  if (row > max - 5) {\n    sheet.insertRowsAfter(max, 1000);\n    applyColumnFormats_(sheet, max + 1, 1000);\n  }\n}\n\nfunction applyColumnFormats_(sheet, startRow, numRows) {\n  var n = HEADERS.length;\n  function col(c) { return sheet.getRange(startRow, c, numRows, 1); }\n  sheet.getRange(startRow, 1, numRows, n).setFontFamily(\"Segoe UI\").setFontSize(10).setVerticalAlignment(\"middle\");\n  col(1).setHorizontalAlignment(\"center\").setFontWeight(\"bold\").setFontColor(\"#1E293B\");\n  col(2).setHorizontalAlignment(\"center\").setNumberFormat(\"dd-mmm-yyyy hh:mm AM/PM\");\n  col(3).setHorizontalAlignment(\"left\").setFontWeight(\"bold\").setFontColor(\"#0F172A\");\n  col(4).setHorizontalAlignment(\"center\").setNumberFormat(\"@\");\n  col(5).setHorizontalAlignment(\"center\");\n  col(6).setHorizontalAlignment(\"left\").setWrap(true);\n  col(7).setHorizontalAlignment(\"left\").setWrap(true);\n  col(8).setHorizontalAlignment(\"center\").setFontWeight(\"bold\");\n  col(9).setHorizontalAlignment(\"right\").setNumberFormat('\"৳\"#,##0');\n  col(10).setHorizontalAlignment(\"center\");\n  col(11).setHorizontalAlignment(\"right\").setNumberFormat('\"৳\"#,##0');\n  col(12).setHorizontalAlignment(\"right\").setFontWeight(\"bold\").setFontColor(\"#0F5132\").setBackground(\"#E6F4EA\").setNumberFormat('\"৳\"#,##0');\n  col(13).setHorizontalAlignment(\"left\").setWrap(true);\n  col(15).setHorizontalAlignment(\"left\");\n  col(14).setHorizontalAlignment(\"center\").setFontWeight(\"bold\")\n    .setDataValidation(SpreadsheetApp.newDataValidation().requireValueInList(STATUSES, true).setAllowInvalid(false).build());\n}\n\nfunction formatOrderSheet_(sheet) {\n  var n = HEADERS.length;\n  var maxRows = sheet.getMaxRows();\n  if (maxRows < FORMAT_ROWS) sheet.insertRowsAfter(maxRows, FORMAT_ROWS - maxRows);\n  var total = sheet.getMaxRows();\n\n  for (var c = 0; c < COL_WIDTHS.length; c++) sheet.setColumnWidth(c + 1, COL_WIDTHS[c]);\n\n  // হেডার\n  sheet.setFrozenRows(1);\n  sheet.setFrozenColumns(1);\n  sheet.setRowHeight(1, 42);\n  sheet.getRange(1, 1, 1, n).setValues([HEADERS])\n    .setFontWeight(\"bold\").setFontSize(11).setFontFamily(\"Segoe UI\")\n    .setBackground(\"#0F5132\").setFontColor(\"#FFFFFF\")\n    .setHorizontalAlignment(\"center\").setVerticalAlignment(\"middle\").setWrap(true);\n\n  // ডাটা সারির কলাম ফরম্যাট (একবারেই – অর্ডার সাবমিট তাই দ্রুত হয়)\n  applyColumnFormats_(sheet, 2, total - 1);\n  sheet.getRange(2, 1, total - 1, n).setBorder(true, true, true, true, true, true, \"#CBD5E1\", SpreadsheetApp.BorderStyle.SOLID);\n\n  // জেব্রা স্ট্রাইপ (ব্যান্ডিং) – নতুন সারিতেও নিজে থেকে প্রযোজ্য\n  try {\n    var banded = sheet.getBandings();\n    for (var b = 0; b < banded.length; b++) banded[b].remove();\n    sheet.getRange(2, 1, total - 1, n).applyRowBanding(SpreadsheetApp.BandingTheme.LIGHT_GREY, false, false)\n      .setFirstRowColor(\"#FFFFFF\").setSecondRowColor(\"#F8FAFC\");\n  } catch (e) {}\n\n  // ফিল্টার\n  try {\n    var f = sheet.getFilter();\n    if (f) f.remove();\n    sheet.getRange(1, 1, total, n).createFilter();\n  } catch (e2) {}\n\n  // স্ট্যাটাস কালার\n  var range = sheet.getRange(2, STATUS_COL, total - 1, 1);\n  var defs = [[\"New\", \"#FEF3C7\", \"#92400E\"], [\"Processing\", \"#DBEAFE\", \"#1E40AF\"], [\"Delivered\", \"#D1FAE5\", \"#065F46\"], [\"Cancelled\", \"#FEE2E2\", \"#991B1B\"]];\n  var rules = [];\n  for (var i = 0; i < defs.length; i++) {\n    rules.push(SpreadsheetApp.newConditionalFormatRule().whenTextEqualTo(defs[i][0]).setBackground(defs[i][1]).setFontColor(defs[i][2]).setRanges([range]).build());\n  }\n  sheet.setConditionalFormatRules(rules);\n\n  // ট্যাব রঙ\n  try { sheet.setTabColor(\"#0F5132\"); } catch (e3) {}\n}\n\n\n/* =========================================================================\n   ৮খ. User Activity, Pixel Events ও Report ট্যাব\n   ========================================================================= */\nvar ACT_HEADERS = [\"Date & Time\", \"Session ID\", \"Source\", \"Medium\", \"Campaign\", \"Referrer\", \"Device\", \"Screen\", \"Landing Page\",\n  \"Max Scroll %\", \"Time on Page (sec)\", \"Order Btn Clicks\", \"Video Sound On\", \"Reached Checkout\", \"Started Form\", \"Ordered\", \"Order ID\", \"Pixel Events\", \"Last Update\"];\nvar ACT_WIDTHS = [165, 150, 120, 100, 130, 130, 90, 90, 110, 100, 120, 110, 110, 120, 105, 90, 140, 260, 165];\nvar PIX_HEADERS = [\"Date & Time\", \"Session ID\", \"Event\", \"Value\", \"Currency\", \"Content IDs\", \"Order ID\", \"Source\", \"Device\"];\nvar PIX_WIDTHS = [165, 150, 140, 100, 80, 160, 140, 130, 90];\n\nfunction ensureRows_(sheet, row, fmt) {\n  var max = sheet.getMaxRows();\n  if (row > max - 5) {\n    sheet.insertRowsAfter(max, 1500);\n    if (fmt) fmt(max + 1, 1500);\n  }\n}\n\nfunction styleHeader_(sh, headers, widths, color) {\n  for (var c = 0; c < widths.length; c++) sh.setColumnWidth(c + 1, widths[c]);\n  sh.setFrozenRows(1);\n  sh.setRowHeight(1, 40);\n  sh.getRange(1, 1, 1, headers.length).setValues([headers])\n    .setFontWeight(\"bold\").setFontSize(11).setFontFamily(\"Segoe UI\")\n    .setBackground(color).setFontColor(\"#FFFFFF\")\n    .setHorizontalAlignment(\"center\").setVerticalAlignment(\"middle\").setWrap(true);\n  try { sh.setTabColor(color); } catch (e) {}\n}\n\nfunction fmtActivity_(sh, start, count) {\n  sh.getRange(start, 1, count, ACT_HEADERS.length).setFontFamily(\"Segoe UI\").setFontSize(10).setVerticalAlignment(\"middle\").setHorizontalAlignment(\"center\");\n  sh.getRange(start, 1, count, 1).setNumberFormat(\"dd-mmm-yyyy hh:mm AM/PM\");\n  sh.getRange(start, 19, count, 1).setNumberFormat(\"dd-mmm-yyyy hh:mm AM/PM\");\n  sh.getRange(start, 10, count, 1).setNumberFormat('0\"%\"');\n  sh.getRange(start, 11, count, 1).setNumberFormat(\"0\");\n  sh.getRange(start, 9, count, 1).setHorizontalAlignment(\"left\");\n  sh.getRange(start, 18, count, 1).setHorizontalAlignment(\"left\");\n}\nfunction getActivitySheet_(ss, force) {\n  ss = ss || getSS_();\n  var sh = ss.getSheetByName(ACT_SHEET), fresh = false;\n  if (!sh) { sh = ss.insertSheet(ACT_SHEET); fresh = true; }\n  if (fresh || force) {\n    var total = Math.max(sh.getMaxRows(), 3000);\n    if (sh.getMaxRows() < total) sh.insertRowsAfter(sh.getMaxRows(), total - sh.getMaxRows());\n    styleHeader_(sh, ACT_HEADERS, ACT_WIDTHS, \"#1E40AF\");\n    fmtActivity_(sh, 2, sh.getMaxRows() - 1);\n    try {\n      var f = sh.getFilter(); if (f) f.remove();\n      sh.getRange(1, 1, sh.getMaxRows(), ACT_HEADERS.length).createFilter();\n      var rule = SpreadsheetApp.newConditionalFormatRule().whenTextEqualTo(\"Yes\").setBackground(\"#D1FAE5\").setFontColor(\"#065F46\")\n        .setRanges([sh.getRange(2, 13, sh.getMaxRows() - 1, 4)]).build();\n      sh.setConditionalFormatRules([rule]);\n    } catch (e) {}\n  }\n  return sh;\n}\n\nfunction fmtPixel_(sh, start, count) {\n  sh.getRange(start, 1, count, PIX_HEADERS.length).setFontFamily(\"Segoe UI\").setFontSize(10).setVerticalAlignment(\"middle\").setHorizontalAlignment(\"center\");\n  sh.getRange(start, 1, count, 1).setNumberFormat(\"dd-mmm-yyyy hh:mm AM/PM\");\n  sh.getRange(start, 4, count, 1).setNumberFormat('\"৳\"#,##0');\n}\nfunction getPixelSheet_(ss, force) {\n  ss = ss || getSS_();\n  var sh = ss.getSheetByName(PIX_SHEET), fresh = false;\n  if (!sh) { sh = ss.insertSheet(PIX_SHEET); fresh = true; }\n  if (fresh || force) {\n    var total = Math.max(sh.getMaxRows(), 5000);\n    if (sh.getMaxRows() < total) sh.insertRowsAfter(sh.getMaxRows(), total - sh.getMaxRows());\n    styleHeader_(sh, PIX_HEADERS, PIX_WIDTHS, \"#7C3AED\");\n    fmtPixel_(sh, 2, sh.getMaxRows() - 1);\n    try {\n      var f = sh.getFilter(); if (f) f.remove();\n      sh.getRange(1, 1, sh.getMaxRows(), PIX_HEADERS.length).createFilter();\n      var defs = [[\"Purchase\", \"#D1FAE5\", \"#065F46\"], [\"InitiateCheckout\", \"#FEF3C7\", \"#92400E\"], [\"AddToCart\", \"#DBEAFE\", \"#1E40AF\"]];\n      var rules = [];\n      for (var i = 0; i < defs.length; i++) rules.push(SpreadsheetApp.newConditionalFormatRule().whenTextEqualTo(defs[i][0]).setBackground(defs[i][1]).setFontColor(defs[i][2]).setRanges([sh.getRange(2, 3, sh.getMaxRows() - 1, 1)]).build());\n      sh.setConditionalFormatRules(rules);\n    } catch (e) {}\n  }\n  return sh;\n}\n\n/** Report ট্যাব: গত ১৪ দিনের ভিজিটর, অর্ডার, বিক্রি, কনভার্সন – সব ফর্মুলায় নিজে নিজে আপডেট হয় */\nfunction buildReport_(ss) {\n  var sh = ss.getSheetByName(REPORT_SHEET);\n  if (!sh) sh = ss.insertSheet(REPORT_SHEET);\n  sh.clear();\n  sh.setHiddenGridlines(true);\n  sh.setColumnWidths(1, 1, 24);\n  sh.setColumnWidths(2, 8, 125);\n  var O = \"'\" + SHEET_NAME + \"'!\", A = \"'\" + ACT_SHEET + \"'!\", P = \"'\" + PIX_SHEET + \"'!\";\n\n  sh.getRange(\"B2\").setValue(\"📈 রিপোর্ট (গত ১৪ দিন)\").setFontSize(20).setFontWeight(\"bold\").setFontColor(\"#0F5132\");\n  sh.getRange(\"B3\").setValue(\"ভিজিটর = User Activity ট্যাব, অর্ডার/বিক্রি = Orders ট্যাব (ক্যানসেল বাদে), Purchase = Pixel Events ট্যাব\").setFontColor(\"#64748B\").setFontSize(10);\n\n  var heads = [\"তারিখ\", \"ভিজিটর\", \"চেকআউটে পৌঁছেছে\", \"অর্ডার\", \"বিক্রি\", \"কনভার্সন %\", \"গড় অর্ডার\", \"Pixel Purchase\"];\n  sh.getRange(5, 2, 1, heads.length).setValues([heads]).setFontWeight(\"bold\").setBackground(\"#0F5132\").setFontColor(\"#FFFFFF\").setHorizontalAlignment(\"center\").setWrap(true);\n  sh.setRowHeight(5, 38);\n\n  var rows = [];\n  for (var k = 0; k < 14; k++) {\n    var r = 6 + k;\n    var d = \"$B\" + r;\n    var actRange = A + \"$A$2:$A\", ordRange = O + \"$B$2:$B\", pixRange = P + \"$A$2:$A\";\n    rows.push([\n      \"=TODAY()-\" + k,\n      \"=COUNTIFS(\" + actRange + \",\\\">=\\\"&\" + d + \",\" + actRange + \",\\\"<\\\"&\" + d + \"+1)\",\n      \"=COUNTIFS(\" + actRange + \",\\\">=\\\"&\" + d + \",\" + actRange + \",\\\"<\\\"&\" + d + \"+1,\" + A + \"$N$2:$N,\\\"Yes\\\")\",\n      \"=COUNTIFS(\" + ordRange + \",\\\">=\\\"&\" + d + \",\" + ordRange + \",\\\"<\\\"&\" + d + \"+1,\" + O + \"$N$2:$N,\\\"<>Cancelled\\\")\",\n      \"=SUMIFS(\" + O + \"$L$2:$L,\" + ordRange + \",\\\">=\\\"&\" + d + \",\" + ordRange + \",\\\"<\\\"&\" + d + \"+1,\" + O + \"$N$2:$N,\\\"<>Cancelled\\\")\",\n      \"=IFERROR(E\" + r + \"/C\" + r + \",0)\",\n      \"=IFERROR(F\" + r + \"/E\" + r + \",0)\",\n      \"=COUNTIFS(\" + pixRange + \",\\\">=\\\"&\" + d + \",\" + pixRange + \",\\\"<\\\"&\" + d + \"+1,\" + P + \"$C$2:$C,\\\"Purchase\\\")\"\n    ]);\n  }\n  sh.getRange(6, 2, 14, 8).setFormulas(rows).setHorizontalAlignment(\"center\");\n  sh.getRange(6, 2, 14, 1).setNumberFormat(\"dd-mmm-yyyy (ddd)\");\n  sh.getRange(6, 6, 14, 1).setNumberFormat('\"৳\"#,##0');\n  sh.getRange(6, 7, 14, 1).setNumberFormat(\"0.0%\");\n  sh.getRange(6, 8, 14, 1).setNumberFormat('\"৳\"#,##0');\n  sh.getRange(\"B20\").setValue(\"মোট\");\n  sh.getRange(\"C20:F20\").setFormulas([[\"=SUM(C6:C19)\", \"=SUM(D6:D19)\", \"=SUM(E6:E19)\", \"=SUM(F6:F19)\"]]);\n  sh.getRange(\"G20\").setFormula(\"=IFERROR(E20/C20,0)\");\n  sh.getRange(\"H20\").setFormula(\"=IFERROR(F20/E20,0)\");\n  sh.getRange(\"I20\").setFormula(\"=SUM(I6:I19)\");\n  sh.getRange(\"B20:I20\").setFontWeight(\"bold\").setBackground(\"#E6F4EA\").setHorizontalAlignment(\"center\");\n  sh.getRange(\"F20\").setNumberFormat('\"৳\"#,##0'); sh.getRange(\"G20\").setNumberFormat(\"0.0%\"); sh.getRange(\"H20\").setNumberFormat('\"৳\"#,##0');\n  sh.getRange(\"B5:I20\").setBorder(true, true, true, true, true, true, \"#CBD5E1\", SpreadsheetApp.BorderStyle.SOLID);\n\n  sh.getRange(\"B23\").setValue(\"🌐 ভিজিটর সোর্স\").setFontWeight(\"bold\").setFontSize(13);\n  sh.getRange(\"B24\").setFormula(\"=IFERROR(QUERY(\" + A + \"A1:S,\\\"select C, count(B) where C <> '' group by C order by count(B) desc limit 10 label C 'সোর্স', count(B) 'ভিজিটর'\\\",1),\\\"এখনো কোনো ডাটা নেই\\\")\");\n  sh.getRange(\"E23\").setValue(\"🛒 সোর্স অনুযায়ী অর্ডার\").setFontWeight(\"bold\").setFontSize(13);\n  sh.getRange(\"E24\").setFormula(\"=IFERROR(QUERY(\" + O + \"A1:O,\\\"select O, count(A), sum(L) where A <> '' and N <> 'Cancelled' group by O order by count(A) desc limit 10 label O 'সোর্স', count(A) 'অর্ডার', sum(L) 'বিক্রি'\\\",1),\\\"এখনো কোনো অর্ডার নেই\\\")\");\n  sh.getRange(\"I23\").setValue(\"📱 ডিভাইস\").setFontWeight(\"bold\").setFontSize(13);\n  sh.getRange(\"I24\").setFormula(\"=IFERROR(QUERY(\" + A + \"A1:S,\\\"select G, count(B) where G <> '' group by G order by count(B) desc label G 'ডিভাইস', count(B) 'ভিজিটর'\\\",1),\\\"এখনো কোনো ডাটা নেই\\\")\");\n  sh.getRange(\"B24:C24\").setFontWeight(\"bold\").setBackground(\"#1E40AF\").setFontColor(\"#FFFFFF\").setHorizontalAlignment(\"center\");\n  sh.getRange(\"E24:G24\").setFontWeight(\"bold\").setBackground(\"#0F5132\").setFontColor(\"#FFFFFF\").setHorizontalAlignment(\"center\");\n  sh.getRange(\"I24:J24\").setFontWeight(\"bold\").setBackground(\"#7C3AED\").setFontColor(\"#FFFFFF\").setHorizontalAlignment(\"center\");\n  sh.getRange(\"G25:G34\").setNumberFormat('\"৳\"#,##0');\n  try { sh.setTabColor(\"#059669\"); } catch (e) {}\n}\n\n\n/* =========================================================================\n   ৯. Dashboard ট্যাব (অটো হিসাব – অর্ডার আসার সাথে সাথে আপডেট)\n   ========================================================================= */\nfunction buildDashboard_(ss) {\n  var sh = ss.getSheetByName(DASH_SHEET);\n  if (!sh) sh = ss.insertSheet(DASH_SHEET);\n  sh.clear();\n  sh.setHiddenGridlines(true);\n  sh.setColumnWidths(1, 1, 24);\n  sh.setColumnWidths(2, 5, 170);\n  var O = \"'\" + SHEET_NAME + \"'!\";\n\n  sh.getRange(\"B2\").setValue(\"🍯 অর্ডার ড্যাশবোর্ড\").setFontSize(20).setFontWeight(\"bold\").setFontColor(\"#0F5132\");\n  sh.getRange(\"B3\").setValue(\"এই পাতা নিজে থেকে আপডেট হয় – কিছু এডিট করার দরকার নেই\").setFontColor(\"#64748B\").setFontSize(10);\n\n  var cards = [\n    [\"মোট অর্ডার\",        \"=COUNTA(\" + O + \"A2:A)\",                                         \"#EFF6FF\", \"#1E40AF\", \"0\"],\n    [\"আজকের অর্ডার\",       \"=COUNTIFS(\" + O + \"B2:B,\\\">=\\\"&TODAY())\",                          \"#FEF3C7\", \"#92400E\", \"0\"],\n    [\"মোট বিক্রি (ক্যানসেল বাদে)\", \"=SUMIF(\" + O + \"N2:N,\\\"<>Cancelled\\\",\" + O + \"L2:L)\",        \"#E6F4EA\", \"#0F5132\", '\"৳\"#,##0'],\n    [\"ডেলিভারি সম্পন্ন\",    \"=COUNTIF(\" + O + \"N2:N,\\\"Delivered\\\")\",                            \"#D1FAE5\", \"#065F46\", \"0\"]\n  ];\n  for (var i = 0; i < cards.length; i++) {\n    var col = 2 + i;\n    sh.getRange(5, col).setValue(cards[i][0]).setFontSize(10).setFontColor(cards[i][3]).setBackground(cards[i][2]).setHorizontalAlignment(\"center\").setWrap(true);\n    sh.getRange(6, col).setFormula(cards[i][1]).setFontSize(22).setFontWeight(\"bold\").setFontColor(cards[i][3]).setBackground(cards[i][2]).setHorizontalAlignment(\"center\").setNumberFormat(cards[i][4]);\n  }\n  sh.setRowHeight(5, 34); sh.setRowHeight(6, 56);\n\n  sh.getRange(\"B9\").setValue(\"📦 অর্ডার স্ট্যাটাস\").setFontWeight(\"bold\").setFontSize(13).setFontColor(\"#0F172A\");\n  var stat = [[\"New\", \"নতুন\"], [\"Processing\", \"প্রসেসিং\"], [\"Delivered\", \"ডেলিভারড\"], [\"Cancelled\", \"ক্যানসেল\"]];\n  sh.getRange(\"B10:C10\").setValues([[\"স্ট্যাটাস\", \"সংখ্যা\"]]).setFontWeight(\"bold\").setBackground(\"#0F5132\").setFontColor(\"#FFFFFF\").setHorizontalAlignment(\"center\");\n  for (var s = 0; s < stat.length; s++) {\n    sh.getRange(11 + s, 2).setValue(stat[s][1] + \" (\" + stat[s][0] + \")\");\n    sh.getRange(11 + s, 3).setFormula(\"=COUNTIF(\" + O + \"N2:N,\\\"\" + stat[s][0] + \"\\\")\").setHorizontalAlignment(\"center\").setFontWeight(\"bold\");\n  }\n  sh.getRange(\"B11:C14\").setBorder(true, true, true, true, true, true, \"#CBD5E1\", SpreadsheetApp.BorderStyle.SOLID);\n\n  sh.getRange(\"E9\").setValue(\"📍 শীর্ষ ১০ জেলা\").setFontWeight(\"bold\").setFontSize(13).setFontColor(\"#0F172A\");\n  sh.getRange(\"E10\").setFormula(\"=IFERROR(QUERY(\" + O + \"E1:E,\\\"select E, count(E) where E <> '' group by E order by count(E) desc limit 10 label E 'জেলা', count(E) 'অর্ডার'\\\",1),\\\"এখনো কোনো অর্ডার নেই\\\")\");\n  sh.getRange(\"E10:F10\").setFontWeight(\"bold\").setBackground(\"#0F5132\").setFontColor(\"#FFFFFF\").setHorizontalAlignment(\"center\");\n\n  sh.getRange(\"B23\").setValue(\"🕒 সর্বশেষ ৫টি অর্ডার\").setFontWeight(\"bold\").setFontSize(13).setFontColor(\"#0F172A\");\n  sh.getRange(\"B24\").setFormula(\"=IFERROR(QUERY(\" + O + \"A1:N,\\\"select A, C, E, L, N where A <> '' order by B desc limit 5 label A 'অর্ডার আইডি', C 'নাম', E 'জেলা', L 'মোট বিল', N 'স্ট্যাটাস'\\\",1),\\\"এখনো কোনো অর্ডার নেই\\\")\");\n  sh.getRange(\"B24:F24\").setFontWeight(\"bold\").setBackground(\"#0F5132\").setFontColor(\"#FFFFFF\").setHorizontalAlignment(\"center\");\n  sh.getRange(\"E25:E29\").setNumberFormat('\"৳\"#,##0');\n  try { sh.setTabColor(\"#E3A62A\"); } catch (e) {}\n  sh.setFrozenRows(0);\n}\n\n\n/* =========================================================================\n   ১০. সাহায্যকারী\n   ========================================================================= */\nfunction json_(obj) {\n  return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);\n}\n\n/** টেস্ট: Apps Script থেকে ▶ Run করে একটি টেস্ট অর্ডার দিন */\nfunction testOrder() {\n  var res = doPost({\n    postData: { contents: JSON.stringify({\n      name: \"টেস্ট কাস্টমার\", phone: \"01700000000\", district: \"ঢাকা\",\n      address: \"মিরপুর-১০, ঢাকা\", note: \"এটি একটি টেস্ট অর্ডার\", shippingId: \"dhaka\",\n      items: [{ id: \"m1000\", qty: 1 }, { id: \"hn1000\", qty: 1 }]\n    }) }\n  });\n  Logger.log(\"টেস্ট রেসপন্স: \" + res.getContent());\n}\n\n/** টেস্ট: ভিজিটর অ্যাক্টিভিটি ও Pixel ইভেন্ট শিটে যাচ্ছে কিনা দেখতে ▶ Run করুন */\nfunction testTrack() {\n  var res = doPost({\n    postData: { contents: JSON.stringify({\n      action: \"track\", sid: \"TEST\" + new Date().getTime(),\n      a: { src: \"facebook\", med: \"cpc\", camp: \"test\", ref: \"\", dev: \"Mobile\", scr: \"390x844\", land: \"/\", scroll: 80, secs: 42, cta: 2, vs: 1, chk: 1, form: 1, ord: 0, oid: \"\" },\n      ev: [{ n: \"PageView\", v: 0, c: \"\", o: \"\" }, { n: \"ViewContent\", v: 1050, c: \"m1000\", o: \"\" }, { n: \"InitiateCheckout\", v: 1050, c: \"\", o: \"\" }]\n    }) }\n  });\n  Logger.log(\"ট্র্যাকিং রেসপন্স: \" + res.getContent());\n}\n";
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  /* ---------- helpers ---------- */
+  function isObj(x) { return x && typeof x === "object" && !Array.isArray(x); }
+  function clone(x) { return JSON.parse(JSON.stringify(x)); }
+  function merge(a, b) {
+    var out = Array.isArray(a) ? a.slice() : {}, k;
+    if (isObj(a)) for (k in a) out[k] = isObj(a[k]) ? merge(a[k], {}) : (Array.isArray(a[k]) ? a[k].slice() : a[k]);
+    if (isObj(b)) for (k in b) { if (b[k] === undefined || b[k] === null) continue; out[k] = (isObj(b[k]) && isObj(out[k])) ? merge(out[k], b[k]) : b[k]; }
+    return out;
+  }
+  function get(o, p) { return p.split(".").reduce(function (a, k) { return a == null ? a : a[k]; }, o); }
+  function set(o, p, v) { var ks = p.split("."), last = ks.pop(), t = o; ks.forEach(function (k) { if (t[k] === null || typeof t[k] !== "object") t[k] = {}; t = t[k]; }); t[last] = v; }
+  function h(tag, a) {
+    var e = document.createElement(tag); a = a || {};
+    for (var k in a) {
+      var v = a[k];
+      if (v == null || v === false) continue;
+      if (k === "class") e.className = v;
+      else if (k.slice(0, 2) === "on") e[k] = v;
+      else if (v === true) e.setAttribute(k, "");
+      else e.setAttribute(k, v);
+    }
+    for (var i = 2; i < arguments.length; i++) add(e, arguments[i]);
+    return e;
+  }
+  function add(e, c) {
+    if (c == null || c === false) return;
+    if (Array.isArray(c)) { c.forEach(function (x) { add(e, x); }); return; }
+    e.appendChild(c.nodeType ? c : document.createTextNode(String(c)));
+  }
+  function bn(n) { return String(n).replace(/\d/g, function (d) { return "০১২৩৪৫৬৭৮৯"[d]; }); }
+  function toast(msg, type) {
+    var t = $("#toast"); t.textContent = msg; t.className = "toast show " + (type || "");
+    clearTimeout(toast._t); toast._t = setTimeout(function () { t.className = "toast"; }, 3200);
+  }
+
+  /* ---------- হেল্পার: SHA-256, ZIP ---------- */
+  function sha256(str) {
+    var K = [], P = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199, 211, 223, 227, 229, 233, 239, 241, 251, 257, 263, 269, 271, 277, 281, 283, 293, 307, 311];
+    for (var i = 0; i < 64; i++) K[i] = Math.floor((Math.pow(P[i], 1 / 3) % 1) * 4294967296) | 0;
+    var Hh = [2, 3, 5, 7, 11, 13, 17, 19].map(function (p) { return Math.floor((Math.sqrt(p) % 1) * 4294967296) | 0; });
+    var bytes = new TextEncoder().encode(str), l = bytes.length, n = ((l + 9 + 63) >> 6) << 6, m = new Uint8Array(n);
+    m.set(bytes); m[l] = 0x80;
+    var dv = new DataView(m.buffer); dv.setUint32(n - 4, l * 8, false); dv.setUint32(n - 8, Math.floor(l * 8 / 4294967296), false);
+    var rr = function (x, c) { return (x >>> c) | (x << (32 - c)); };
+    for (var o = 0; o < n; o += 64) {
+      var w = new Array(64);
+      for (i = 0; i < 16; i++) w[i] = dv.getInt32(o + i * 4, false);
+      for (i = 16; i < 64; i++) {
+        var s0 = rr(w[i - 15], 7) ^ rr(w[i - 15], 18) ^ (w[i - 15] >>> 3), s1 = rr(w[i - 2], 17) ^ rr(w[i - 2], 19) ^ (w[i - 2] >>> 10);
+        w[i] = (w[i - 16] + s0 + w[i - 7] + s1) | 0;
+      }
+      var a = Hh[0], b = Hh[1], c = Hh[2], d = Hh[3], e = Hh[4], f = Hh[5], g = Hh[6], hh = Hh[7];
+      for (i = 0; i < 64; i++) {
+        var t1 = (hh + (rr(e, 6) ^ rr(e, 11) ^ rr(e, 25)) + ((e & f) ^ (~e & g)) + K[i] + w[i]) | 0;
+        var t2 = ((rr(a, 2) ^ rr(a, 13) ^ rr(a, 22)) + ((a & b) ^ (a & c) ^ (b & c))) | 0;
+        hh = g; g = f; f = e; e = (d + t1) | 0; d = c; c = b; b = a; a = (t1 + t2) | 0;
+      }
+      Hh[0] = (Hh[0] + a) | 0; Hh[1] = (Hh[1] + b) | 0; Hh[2] = (Hh[2] + c) | 0; Hh[3] = (Hh[3] + d) | 0;
+      Hh[4] = (Hh[4] + e) | 0; Hh[5] = (Hh[5] + f) | 0; Hh[6] = (Hh[6] + g) | 0; Hh[7] = (Hh[7] + hh) | 0;
+    }
+    return Hh.map(function (x) { return ("00000000" + (x >>> 0).toString(16)).slice(-8); }).join("");
+  }
+  var CRC = (function () { var t = [], c, n, k; for (n = 0; n < 256; n++) { c = n; for (k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
+  function crc32(u) { var c = 0xFFFFFFFF; for (var i = 0; i < u.length; i++) c = CRC[(c ^ u[i]) & 255] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; }
+  function makeZip(files) {           // files: [{name, data:Uint8Array}] – স্টোর মেথড (ছবি আগেই কম্প্রেসড)
+    var enc = new TextEncoder(), parts = [], cd = [], off = 0, now = new Date();
+    var dt = ((now.getFullYear() - 1980) << 9) | ((now.getMonth() + 1) << 5) | now.getDate(), tm = (now.getHours() << 11) | (now.getMinutes() << 5) | (now.getSeconds() >> 1);
+    files.forEach(function (f) {
+      var nm = enc.encode(f.name), crc = crc32(f.data), sz = f.data.length;
+      var lh = new DataView(new ArrayBuffer(30));
+      lh.setUint32(0, 0x04034b50, true); lh.setUint16(4, 20, true); lh.setUint16(6, 0x0800, true); lh.setUint16(8, 0, true);
+      lh.setUint16(10, tm, true); lh.setUint16(12, dt, true); lh.setUint32(14, crc, true); lh.setUint32(18, sz, true); lh.setUint32(22, sz, true); lh.setUint16(26, nm.length, true); lh.setUint16(28, 0, true);
+      parts.push(new Uint8Array(lh.buffer), nm, f.data);
+      var ch = new DataView(new ArrayBuffer(46));
+      ch.setUint32(0, 0x02014b50, true); ch.setUint16(4, 20, true); ch.setUint16(6, 20, true); ch.setUint16(8, 0x0800, true); ch.setUint16(10, 0, true);
+      ch.setUint16(12, tm, true); ch.setUint16(14, dt, true); ch.setUint32(16, crc, true); ch.setUint32(20, sz, true); ch.setUint32(24, sz, true); ch.setUint16(28, nm.length, true); ch.setUint32(42, off, true);
+      cd.push(new Uint8Array(ch.buffer), nm);
+      off += 30 + nm.length + sz;
+    });
+    var cdSize = cd.reduce(function (a, p) { return a + p.length; }, 0);
+    var end = new DataView(new ArrayBuffer(22));
+    end.setUint32(0, 0x06054b50, true); end.setUint16(8, files.length, true); end.setUint16(10, files.length, true); end.setUint32(12, cdSize, true); end.setUint32(16, off, true);
+    return new Blob(parts.concat(cd, [new Uint8Array(end.buffer)]), { type: "application/zip" });
+  }
+
+  /* ---------- state ---------- */
+  var PW_HASH = "d8560ca7bb2875b1084b7ae1d810356b00bce2ac3edf2abe470731757067137d";
+  var DK = "hn_admin_draft";
+  var cfg = null, isDirty = false, page = "sec:top", pending = {}, exported = false;
+  var KEYS = ["apiEndpoint", "pageTitle", "sections", "order", "videoUrl", "videoPoster", "currency", "contact", "copy", "products", "defaultProduct", "shipping", "defaultShipping", "freeShippingMinTotal", "maxQty", "sheetDemo", "theme", "custom", "tracking", "fraudMinutes"];
+  var IMG_KEYS = ["benefit", "offerBg", "gallery", "reviews", "documents"];
+  function payload() {
+    var out = {};
+    KEYS.forEach(function (k) { if (cfg[k] !== undefined) out[k] = clone(cfg[k]); });
+    out.images = {}; IMG_KEYS.forEach(function (k) { if (cfg.images && cfg.images[k] !== undefined) out.images[k] = clone(cfg.images[k]); });
+    return out;
+  }
+  var baseSig = sha256(JSON.stringify(DEF));
+  var dt;
+  function status() {
+    var n = Object.keys(pending).length;
+    $("#dirtyTxt").textContent = !isDirty && !n ? "কোনো পরিবর্তন নেই" : (exported ? "✅ ডাউনলোড হয়েছে – এবার commit/push করুন" : "⚠️ পরিবর্তন আছে – ডাউনলোড বাকি" + (n ? " (📷 " + bn(n) + "টি নতুন ছবি)" : ""));
+    $("#saveBtn").classList.toggle("dirty", (isDirty || n) && !exported);
+  }
+  function dirty(v) {
+    isDirty = v !== false; exported = false; status();
+    clearTimeout(dt);
+    dt = setTimeout(function () {
+      try { localStorage.setItem(DK, JSON.stringify({ base: baseSig, data: payload() })); } catch (e) {}
+    }, 250);
+  }
+  window.addEventListener("beforeunload", function (e) { if ((isDirty || Object.keys(pending).length) && !exported) { e.preventDefault(); e.returnValue = ""; } });
+
+  /* ---------- ছবি বাছাই ও কম্প্রেস ---------- */
+  function pickImage(folder, cb) {
+    var f = h("input", { type: "file", accept: "image/*" });
+    f.onchange = function () {
+      var file = f.files[0]; if (!file) return;
+      var img = new Image(), url = URL.createObjectURL(file);
+      img.onload = function () {
+        var max = 1400, sc = Math.min(1, max / Math.max(img.width, img.height));
+        var cv = document.createElement("canvas"); cv.width = Math.round(img.width * sc); cv.height = Math.round(img.height * sc);
+        var cx = cv.getContext("2d"); cx.fillStyle = "#fff"; cx.fillRect(0, 0, cv.width, cv.height); cx.drawImage(img, 0, 0, cv.width, cv.height);
+        cv.toBlob(function (b) {
+          URL.revokeObjectURL(url);
+          var base = file.name.replace(/\.[^.]+$/, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "img";
+          var path = "assets/" + folder + "/" + base + "-" + Date.now().toString(36) + ".jpg";
+          var purl = URL.createObjectURL(b);
+          pending[path] = { blob: b, url: purl };
+          toast("ছবি যোগ হয়েছে (" + Math.round(b.size / 1024) + " KB)", "ok"); status();
+          cb(path, purl);
+        }, "image/jpeg", 0.82);
+      };
+      img.onerror = function () { toast("ছবিটি পড়া যায়নি", "bad"); };
+      img.src = url;
+    };
+    f.click();
+  }
+
+  /* ---------- reusable UI ---------- */
+  function sw(checked, fn, label) {
+    var i = h("input", { type: "checkbox" }); i.checked = !!checked;
+    i.onchange = function () { fn(i.checked); };
+    return h("label", { class: "sw" }, i, h("span", { class: "sw-t" }), label ? h("span", { class: "sw-l" }, label) : null);
+  }
+  function field(label, path, o) {
+    o = o || {};
+    var val = get(cfg, path);
+    var inp = o.multi ? h("textarea", { rows: o.rows || 2 }) : h("input", { type: o.num ? "number" : "text", inputmode: o.num ? "numeric" : null, min: o.num ? "0" : null });
+    inp.value = val == null ? "" : val;
+    if (o.ph) inp.placeholder = o.ph;
+    inp.oninput = function () {
+      var v = inp.value;
+      if (o.num) v = v === "" ? "" : Number(v);
+      set(cfg, path, v); dirty(); if (o.onchange) o.onchange();
+    };
+    return h("div", { class: "fld" }, h("label", {}, label), inp, o.hint ? h("small", {}, o.hint) : null);
+  }
+  function mv(arr, i, d) { var j = i + d; if (j < 0 || j >= arr.length) return false; var t = arr[i]; arr[i] = arr[j]; arr[j] = t; return true; }
+  function thumb(src) {
+    var im = h("img", { class: "th", alt: "", loading: "lazy" });
+    im.onerror = function () { im.classList.add("bad"); }; im.onload = function () { im.classList.remove("bad"); };
+    im.src = src || "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==";
+    return im;
+  }
+  function strList(path, o) {
+    o = o || {};
+    var wrap = h("div", { class: "list" });
+    if (!Array.isArray(get(cfg, path))) set(cfg, path, []);
+    function draw() {
+      wrap.textContent = "";
+      var arr = get(cfg, path);
+      arr.forEach(function (v, i) {
+        var inp = h(o.multi ? "textarea" : "input", { type: "text", rows: 2, placeholder: o.ph || "" });
+        inp.value = v;
+        var th = o.preview ? thumb(v) : null, tm;
+        inp.oninput = function () {
+          arr[i] = inp.value; dirty();
+          if (th) { clearTimeout(tm); tm = setTimeout(function () { th.src = inp.value; }, 400); }
+        };
+        wrap.appendChild(h("div", { class: "li" }, th, inp, h("div", { class: "li-b" },
+          h("button", { class: "ib", type: "button", title: "উপরে", disabled: i === 0, onclick: function () { if (mv(arr, i, -1)) { dirty(); draw(); } } }, "↑"),
+          h("button", { class: "ib", type: "button", title: "নিচে", disabled: i === arr.length - 1, onclick: function () { if (mv(arr, i, 1)) { dirty(); draw(); } } }, "↓"),
+          h("button", { class: "ib", type: "button", title: "মুছুন", onclick: function () { arr.splice(i, 1); dirty(); draw(); } }, "🗑"))));
+        if (o.folder) {
+          var li = wrap.lastChild.querySelector(".li-b");
+          li.insertBefore(h("button", { class: "ib pick", type: "button", title: "কম্পিউটার/ফোন থেকে ছবি বাছুন", onclick: function () {
+            pickImage(o.folder, function (path, purl) { arr[i] = path; inp.value = path; if (th) th.src = purl; dirty(); });
+          } }, "📁 ছবি"), li.firstChild);
+        }
+      });
+      wrap.appendChild(h("button", { class: "btn ghost", type: "button", onclick: function () { arr.push(""); dirty(); draw(); var l = wrap.querySelectorAll(".li input,.li textarea"); if (l.length) l[l.length - 1].focus(); } }, "＋ " + (o.addText || "নতুন যোগ করুন")));
+    }
+    draw();
+    return wrap;
+  }
+  function imgField(label, path, folder) {
+    var f = field(label, path, { ph: "assets/gallery/gallery-1.jpg", hint: "assets ফোল্ডারের ছবির পথ, পূর্ণ লিংক, অথবা “📁 ছবি বাছুন” চাপুন" });
+    var inp = f.querySelector("input");
+    f.querySelector("label").appendChild(h("button", { class: "ib pick", type: "button", style: "margin-left:8px", onclick: function () {
+      pickImage(folder, function (path2) { inp.value = path2; set(cfg, path, path2); dirty(); });
+    } }, "📁 ছবি বাছুন"));
+    return f;
+  }
+
+  /* ---------- সেকশন তালিকা ---------- */
+  function selField(label, path, opts, onchange, hint) {
+    var sel = h("select", {});
+    opts.forEach(function (o) { var op = h("option", { value: o[0] }, o[1]); if (String(get(cfg, path)) === String(o[0])) op.selected = true; sel.appendChild(op); });
+    sel.onchange = function () { set(cfg, path, sel.value); dirty(); if (onchange) onchange(); };
+    return h("div", { class: "fld" }, h("label", {}, label), sel, hint ? h("small", {}, hint) : null);
+  }
+  function colorField(label, path) {
+    var inp = h("input", { type: "color" }); inp.value = get(cfg, path) || "#ffffff";
+    inp.oninput = function () { set(cfg, path, inp.value); dirty(); };
+    return h("div", { class: "fld" }, h("label", {}, label), inp);
+  }
+  var SEC = {
+    top: { ic: "🏷️", t: "টপ হেডিং", d: "পেজের সবচেয়ে উপরের বড় লেখা", body: function () { return [
+      field("হেডিং লেখা", "copy.topHeading", { multi: true, rows: 3, hint: "রঙিন করতে শব্দ [[ডাবল ব্র্যাকেটে]] লিখুন। যেমন: [[খাঁটি]] মধু" })]; } },
+    video: { ic: "🎬", t: "ভিডিও", d: "পেজের প্রধান ভিডিও", body: function () { return [
+      field("ভিডিও লিংক", "videoUrl", { ph: "assets/videos/hero-video.mp4", hint: "ইউটিউব লিংক দিন, অথবা নিজের mp4 ফাইল assets/videos এ রেখে তার পথ দিন (ভিডিও ফাইল প্যানেল থেকে আপলোড হয় না)।" }),
+      field("ভিডিও লোড হওয়ার আগের ছবি (Poster)", "videoPoster", { ph: "assets/videos/hero-poster.jpg", hint: "শুধু mp4 ভিডিওর জন্য। খালি রাখলেও চলবে।" })]; } },
+    notice: { ic: "📢", t: "লাল নোটিশ", d: "ভিডিওর নিচের লাল ব্যাজ", body: function () { return [field("নোটিশ লেখা", "copy.notice")]; } },
+    cta1: { ic: "👍", t: "অর্ডার বাটন", d: "প্রধান অর্ডার বাটন ও সব বাটনের লেখা", body: function () { return [
+      field("সব অর্ডার বাটনের লেখা", "copy.ctaText", { hint: "এই লেখাটি পেজের সব অর্ডার বাটন ও নিচের স্টিকি বাটনে বদলে যাবে।" })]; } },
+    benefits: { ic: "✅", t: "বিশেষত্ব / সুবিধা", d: "খাঁটি মধু ও হানি নাটের বিশেষত্ব", body: function () { return [
+      field("টাইটেল", "copy.benefitsTitle", { hint: "যেমন: আমাদের খাঁটি মধু ও প্রিমিয়াম হানি নাটের বিশেষত্ব" }),
+      field("সাবটাইটেল (ঐচ্ছিক)", "copy.benefitsSub", { multi: true }),
+      h("div", { class: "sub-h" }, "সুবিধার তালিকা"), strList("copy.benefits", { multi: true, ph: "একটি সুবিধা লিখুন", addText: "নতুন সুবিধা যোগ করুন" }),
+      imgField("উপরের ছবি", "images.benefit", "gallery")]; } },
+    strip1: { ic: "🎞️", t: "চলমান স্ট্রিপ (১)", d: "গাঢ় ব্যাকগ্রাউন্ডে চলমান লেখা", body: function () { return [field("লেখা", "copy.strip1", { hint: "রঙিন করতে [[এভাবে]] লিখুন" })]; } },
+    gallery: { ic: "🖼️", t: "প্রোডাক্ট ইমেজ স্লাইডার", d: "পণ্যের ছবির স্লাইডার", body: function () { return [
+      field("টাইটেল", "copy.galleryTitle", { hint: "খালি রাখলে টাইটেল দেখাবে না" }),
+      field("সাবটাইটেল (ঐচ্ছিক)", "copy.gallerySub", { multi: true }),
+      h("div", { class: "sub-h" }, "স্লাইডারের ছবি"), strList("images.gallery", { preview: true, folder: "gallery", ph: "assets/gallery/gallery-1.jpg", addText: "নতুন ছবি যোগ করুন" })]; } },
+    reviews: { ic: "💬", t: "কাস্টমারদের মতামত", d: "রিভিউ/স্ক্রিনশটের স্লাইডার", body: function () { return [
+      field("টাইটেল", "copy.reviewsTitle", { hint: "যেমন: আমাদের কাস্টমারদের মতামত" }),
+      field("সাবটাইটেল (ঐচ্ছিক)", "copy.reviewsSub", { multi: true }),
+      h("div", { class: "sub-h" }, "রিভিউ ছবি"), strList("images.reviews", { preview: true, folder: "reviews", ph: "assets/reviews/review-1.svg", addText: "নতুন রিভিউ ছবি যোগ করুন" })]; } },
+    docs: { ic: "📄", t: "ল্যাব টেস্ট রিপোর্ট ও ডকুমেন্টস", d: "সার্টিফিকেট/রিপোর্টের স্লাইডার", body: function () { return [
+      field("টাইটেল", "copy.docsTitle", { hint: "যেমন: আমাদের ল্যাব টেস্ট রিপোর্ট ও ডকুমেন্টস" }),
+      field("সাবটাইটেল (ঐচ্ছিক)", "copy.docsSub", { multi: true }),
+      h("div", { class: "sub-h" }, "ডকুমেন্টের ছবি"), strList("images.documents", { preview: true, folder: "documents", ph: "assets/documents/doc-1.svg", addText: "নতুন ডকুমেন্ট যোগ করুন" })]; } },
+    offer: { ic: "🔥", t: "বিশেষ ছাড় / অফার", d: "অফার ব্যানার (টাইটেল + কনটেন্ট)", body: function () { return [
+      field("টাইটেল", "copy.offerLine", { hint: "যেমন: খাঁটি মধু ও হানি নাটে চলছে বিশেষ ছাড়!" }),
+      h("div", { class: "row2" }, field("আগের দাম (খালি রাখলে লুকাবে)", "copy.offerOld", { num: true }), field("অফার দাম", "copy.offerNew", { num: true })),
+      field("কনটেন্ট / বিবরণ", "copy.offerNote", { multi: true }),
+      imgField("ব্যাকগ্রাউন্ড ছবি", "images.offerBg", "gallery")]; } },
+    strip2: { ic: "🎞️", t: "চলমান স্ট্রিপ (২)", d: "অর্ডার ফর্মের আগের চলমান লেখা", body: function () { return [field("লেখা", "copy.strip2", { hint: "রঙিন করতে [[এভাবে]] লিখুন" })]; } },
+    checkout: { ic: "🛒", t: "অর্ডার ফর্ম", d: "টাইটেল, বাটন ও শিট ডেমো কার্ড (সবসময় চালু)", always: true, body: function () {
+      var sd = cfg.sheetDemo || (cfg.sheetDemo = {});
+      return [
+        field("ফর্মের টাইটেল", "copy.checkoutTitle"),
+        h("div", { class: "row2" }, field("সাবমিট বাটনের লেখা", "copy.submitText"), field("পেমেন্ট নোট", "copy.payNote")),
+        h("div", { class: "sub-h" }, "গুগল শিট ডেমো কার্ড"),
+        h("div", { class: "hint", style: "margin-top:8px" }, h("b", {}, "⚠️ সাবধান: "), "এই কার্ডে গুগল শিটের লিংক সবাইকে দেখানো হয়। শিটটি “Anyone with link” করা থাকলে কাস্টমারের ফোন/ঠিকানা সবাই দেখতে পারবে। কাস্টমারের শিটের জন্য এটি বন্ধ রাখুন।"),
+        h("div", { class: "fld" }, sw(sd.enabled !== false, function (v) { sd.enabled = v; dirty(); }, "ডেমো কার্ড দেখান")),
+        field("শিটের লিংক", "sheetDemo.url"), field("কার্ড টাইটেল", "sheetDemo.title"),
+        field("কার্ড বিবরণ", "sheetDemo.subtitle", { multi: true }), field("বাটনের লেখা", "sheetDemo.btnText")];
+    } },
+    footer: { ic: "🦶", t: "ফুটার", d: "পেজের একদম নিচের অংশ", body: function () { return [
+      field("ধন্যবাদ বার্তা", "copy.footMsg"), field("কপিরাইট লেখা", "copy.footCredit"),
+      h("div", { class: "fld" }, sw(cfg.copy.showLegalLinks !== false, function (v) { cfg.copy.showLegalLinks = v; dirty(); }, "Privacy Policy ও Terms লিংক দেখান")),
+      h("div", { class: "row2" }, field("Privacy Policy লিংক", "copy.privacyUrl"), field("Terms লিংক", "copy.termsUrl"))]; } }
+  };
+  var BASE_IDS = ["top", "video", "notice", "cta1", "benefits", "strip1", "gallery", "reviews", "docs", "offer", "strip2", "checkout", "footer"];
+  function customById(id) { return (cfg.custom || []).filter(function (c) { return "c_" + c.id === id; })[0]; }
+  function secInfo(id) {
+    if (SEC[id]) return SEC[id];
+    var c = customById(id);
+    return c ? { ic: "✨", t: c.name || c.title || "নতুন সেকশন", d: "কাস্টম সেকশন", custom: c } : null;
+  }
+  function normOrder() {
+    var all = BASE_IDS.concat((cfg.custom || []).map(function (c) { return "c_" + c.id; }));
+    var o = (cfg.order || []).filter(function (id) { return all.indexOf(id) > -1; });
+    all.forEach(function (id) { if (o.indexOf(id) < 0) { var ci = o.indexOf("checkout"); if (id.indexOf("c_") === 0 && ci > -1) o.splice(ci, 0, id); else o.push(id); } });
+    cfg.order = o;
+  }
+  function isOn(id) { return id === "checkout" ? true : cfg.sections[id] !== false; }
+
+  /* ---------- কাস্টম সেকশন এডিটর ---------- */
+  function newCustom() {
+    return { id: "x" + Date.now().toString(36), name: "নতুন সেকশন", title: "নতুন সেকশনের টাইটেল", subtitle: "", text: "", layout: "single", images: [], cards: [], btnText: "", btnAction: "order", btnLink: "", bg: "cream", bgColor: "#ffffff", textColor: "#2A1C10", align: "center", ratio: "4/3" };
+  }
+  function cardsEditor(path) {
+    var wrap = h("div", { class: "list" });
+    if (!Array.isArray(get(cfg, path))) set(cfg, path, []);
+    function draw() {
+      wrap.textContent = "";
+      var arr = get(cfg, path);
+      arr.forEach(function (c, i) {
+        var th = thumb(c.image), tm;
+        var img = h("input", { type: "text", placeholder: "ছবির পথ (ঐচ্ছিক)" }); img.value = c.image || "";
+        img.oninput = function () { c.image = img.value; dirty(); clearTimeout(tm); tm = setTimeout(function () { th.src = img.value; }, 400); };
+        var ti = h("input", { type: "text", placeholder: "কার্ডের টাইটেল" }); ti.value = c.title || ""; ti.oninput = function () { c.title = ti.value; dirty(); };
+        var tx = h("textarea", { rows: 2, placeholder: "কার্ডের লেখা" }); tx.value = c.text || ""; tx.oninput = function () { c.text = tx.value; dirty(); };
+        wrap.appendChild(h("div", { class: "cardbox" },
+          h("div", { class: "cardrow" }, th, img,
+            h("button", { class: "ib pick", type: "button", onclick: function () { pickImage("custom", function (p, u) { c.image = p; img.value = p; th.src = u; dirty(); }); } }, "📁 ছবি")),
+          h("div", { class: "fld" }, ti), h("div", { class: "fld" }, tx),
+          h("div", { class: "li-b" },
+            h("button", { class: "ib", type: "button", disabled: i === 0, onclick: function () { if (mv(arr, i, -1)) { dirty(); draw(); } } }, "↑"),
+            h("button", { class: "ib", type: "button", disabled: i === arr.length - 1, onclick: function () { if (mv(arr, i, 1)) { dirty(); draw(); } } }, "↓"),
+            h("button", { class: "ib", type: "button", onclick: function () { arr.splice(i, 1); dirty(); draw(); } }, "🗑"))));
+      });
+      wrap.appendChild(h("button", { class: "btn ghost", type: "button", onclick: function () { arr.push({ image: "", title: "", text: "" }); dirty(); draw(); } }, "＋ নতুন কার্ড যোগ করুন"));
+    }
+    draw(); return wrap;
+  }
+  function customBody(c, idx) {
+    var p = "custom." + idx + ".";
+    var out = [
+      field("সেকশনের নাম (শুধু মেনুতে দেখাবে)", p + "name", { onchange: renderSide }),
+      field("টাইটেল", p + "title"), field("সাবটাইটেল", p + "subtitle"), field("বিবরণ / লেখা", p + "text", { multi: true, rows: 4 }),
+      selField("লেআউট (ছবি/কার্ড কীভাবে দেখাবে)", p + "layout", [["single", "একটি বড় ছবি"], ["slider", "ছবির স্লাইডার"], ["grid", "ছবির গ্রিড"], ["cards", "কার্ড (ছবি + টাইটেল + লেখা)"]], render)
+    ];
+    if (c.layout === "cards") { out.push(h("div", { class: "sub-h" }, "কার্ডসমূহ"), cardsEditor(p + "cards")); }
+    else {
+      out.push(h("div", { class: "sub-h" }, c.layout === "single" ? "ছবি (প্রথমটি দেখাবে)" : "ছবিসমূহ"), strList(p + "images", { preview: true, folder: "custom", ph: "assets/custom/photo.jpg", addText: "নতুন ছবি যোগ করুন" }));
+      if (c.layout === "slider") out.push(selField("স্লাইডের আকার", p + "ratio", [["4/3", "আড়াআড়ি (4:3)"], ["3/4", "লম্বা (3:4)"]]));
+    }
+    out.push(h("div", { class: "sub-h" }, "বাটন"),
+      selField("বাটনের কাজ", p + "btnAction", [["order", "অর্ডার ফর্মে নিয়ে যাবে"], ["link", "লিংকে নিয়ে যাবে"], ["none", "বাটন দেখাবে না"]], render),
+      field("বাটনের লেখা", p + "btnText", { ph: "যেমন: এখনই অর্ডার করুন" }));
+    if (c.btnAction === "link") out.push(field("লিংক (https://… অথবা #checkout)", p + "btnLink"));
+    out.push(h("div", { class: "sub-h" }, "স্টাইল"),
+      h("div", { class: "row2" },
+        selField("ব্যাকগ্রাউন্ড", p + "bg", [["cream", "ক্রিম"], ["white", "সাদা"], ["mint", "হালকা সবুজ"], ["green", "গাঢ় সবুজ"], ["brown", "গাঢ় ব্রাউন"], ["custom", "নিজের রং"]], render),
+        selField("লেখা কোন দিকে", p + "align", [["center", "মাঝখানে"], ["left", "বামে"]])));
+    if (c.bg === "custom") out.push(h("div", { class: "row2" }, colorField("ব্যাকগ্রাউন্ড রং", p + "bgColor"), colorField("লেখার রং", p + "textColor")));
+    out.push(h("button", { class: "btn danger mt", type: "button", onclick: function () {
+      if (!confirm("“" + (c.name || c.title) + "” সেকশনটি মুছে ফেলবেন?")) return;
+      cfg.custom.splice(idx, 1); cfg.order = cfg.order.filter(function (x) { return x !== "c_" + c.id; }); delete cfg.sections["c_" + c.id];
+      page = "order"; dirty(); render();
+    } }, "🗑 এই সেকশন মুছুন"));
+    return out;
+  }
+
+  /* ---------- পেজ: একটি সেকশন ---------- */
+  function viewSection(root, id) {
+    var d = secInfo(id);
+    if (!d) { page = "order"; return viewOrder(root); }
+    var idx = cfg.order.indexOf(id), on = isOn(id);
+    var body = d.custom ? customBody(d.custom, cfg.custom.indexOf(d.custom)) : d.body();
+    root.appendChild(h("div", { class: "ph" },
+      h("div", { class: "sec-ic" }, d.ic), h("div", { class: "grow" }, h("h2", {}, d.t), h("p", {}, d.d)),
+      d.always ? h("span", { class: "badge" }, "সবসময় চালু") : sw(on, function (v) { cfg.sections[id] = v; dirty(); renderSide(); pg.classList.toggle("off", !v); }, on ? "দেখাচ্ছে" : "লুকানো"),
+      h("button", { class: "ib", type: "button", title: "উপরে সরান", disabled: idx === 0, onclick: function () { if (mv(cfg.order, idx, -1)) { dirty(); render(); } } }, "↑"),
+      h("button", { class: "ib", type: "button", title: "নিচে সরান", disabled: idx === cfg.order.length - 1, onclick: function () { if (mv(cfg.order, idx, 1)) { dirty(); render(); } } }, "↓")));
+    var pg = h("div", { class: "pg" + (on ? "" : " off") }, body);
+    root.appendChild(pg);
+  }
+
+  /* ---------- পেজ: সেকশনের ক্রম ---------- */
+  function viewOrder(root) {
+    normOrder();
+    root.appendChild(h("div", { class: "hint" }, h("b", {}, "🔀 "), "সুইচ দিয়ে সেকশন দেখান/লুকান, ↑↓ দিয়ে ক্রম বদলান। নামে ক্লিক করলে সেই সেকশন এডিট করা যাবে।"));
+    cfg.order.forEach(function (id, i) {
+      var d = secInfo(id); if (!d) return;
+      var on = isOn(id);
+      root.appendChild(h("div", { class: "ord-row" + (on ? "" : " off") },
+        h("span", { class: "sec-ic", style: "width:34px;height:34px;font-size:1.05rem" }, d.ic),
+        h("span", { class: "nm", onclick: function () { go("sec:" + id); } }, d.t),
+        d.always ? h("span", { class: "badge" }, "সবসময়") : sw(on, function (v) { cfg.sections[id] = v; dirty(); render(); }),
+        h("button", { class: "ib", type: "button", disabled: i === 0, onclick: function () { if (mv(cfg.order, i, -1)) { dirty(); render(); } } }, "↑"),
+        h("button", { class: "ib", type: "button", disabled: i === cfg.order.length - 1, onclick: function () { if (mv(cfg.order, i, 1)) { dirty(); render(); } } }, "↓")));
+    });
+    root.appendChild(h("button", { class: "btn ghost block mt", type: "button", onclick: addCustom }, "＋ নতুন সেকশন যোগ করুন"));
+  }
+  function addCustom() {
+    var c = newCustom(); cfg.custom = cfg.custom || []; cfg.custom.push(c);
+    cfg.sections["c_" + c.id] = true; normOrder(); dirty(); page = "sec:c_" + c.id; render(); toast("নতুন সেকশন যোগ হয়েছে – এখন এডিট করুন", "ok");
+  }
+
+  /* ---------- products & shipping ---------- */
+  function viewProducts(root) {
+    var P = cfg.products;
+    root.appendChild(h("div", { class: "hint" }, h("b", {}, "💡 "), "এখানে দাম বদলালে অর্ডারের হিসাবও (সার্ভারে) এই দামেই হবে। পণ্য “বন্ধ” করলে ওয়েবসাইটে দেখাবে না। পুরোনো অর্ডারে কোনো প্রভাব পড়বে না।"));
+    root.appendChild(h("div", { class: "sub-h" }, "📦 পণ্যের তালিকা"));
+    P.forEach(function (p, i) {
+      var th = thumb(p.thumb), tm;
+      var card = h("div", { class: "prod" + (p.active === false ? " off" : "") });
+      var title = h("b", {}, p.name || "নতুন পণ্য");
+      card.appendChild(h("div", { class: "prod-h" }, th, title, h("code", {}, p.id),
+        sw(p.active !== false, function (v) { p.active = v; card.classList.toggle("off", !v); dirty(); }),
+        h("button", { class: "ib", type: "button", disabled: i === 0, onclick: function () { if (mv(P, i, -1)) { dirty(); render(); } } }, "↑"),
+        h("button", { class: "ib", type: "button", disabled: i === P.length - 1, onclick: function () { if (mv(P, i, 1)) { dirty(); render(); } } }, "↓"),
+        h("button", { class: "ib", type: "button", title: "মুছুন", onclick: function () { if (confirm("“" + (p.name || p.id) + "” পণ্যটি মুছে ফেলবেন?\n(শুধু বন্ধ করতে চাইলে সুইচ ব্যবহার করুন)")) { P.splice(i, 1); dirty(); render(); } } }, "🗑")));
+      card.appendChild(field("পণ্যের নাম", "products." + i + ".name", { onInput: 1 }));
+      var nameInp = card.querySelector(".fld input"); nameInp.addEventListener("input", function () { title.textContent = nameInp.value || "নতুন পণ্য"; });
+      card.appendChild(h("div", { class: "row3" }, field("বিক্রয় দাম", "products." + i + ".price", { num: true }), field("আগের দাম (কাটা দাম)", "products." + i + ".oldPrice", { num: true }), field("ব্যাজ (যেমন: জনপ্রিয়)", "products." + i + ".badge")));
+      var tf = field("পণ্যের ছবি", "products." + i + ".thumb", { ph: "assets/products/honey-500.jpg" });
+      var tin = tf.querySelector("input");
+      tin.addEventListener("input", function (e) { clearTimeout(tm); tm = setTimeout(function () { th.src = e.target.value; }, 400); });
+      tf.querySelector("label").appendChild(h("button", { class: "ib pick", type: "button", style: "margin-left:8px", onclick: function () {
+        pickImage("products", function (path, purl) { p.thumb = path; tin.value = path; th.src = purl; dirty(); });
+      } }, "📁 ছবি বাছুন"));
+      card.appendChild(tf);
+      root.appendChild(card);
+    });
+    root.appendChild(h("button", { class: "btn ghost block", type: "button", onclick: function () {
+      P.push({ id: "p" + Date.now().toString(36), name: "", price: 0, oldPrice: "", badge: "", thumb: "", active: true });
+      dirty(); render(); window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+    } }, "＋ নতুন পণ্য যোগ করুন"));
+
+    var sel = h("select", {});
+    P.filter(function (p) { return p.active !== false; }).forEach(function (p) { var o = h("option", { value: p.id }, p.name || p.id); if (p.id === cfg.defaultProduct) o.selected = true; sel.appendChild(o); });
+    sel.onchange = function () { cfg.defaultProduct = sel.value; dirty(); };
+    root.appendChild(h("div", { class: "fld mt" }, h("label", {}, "পেজ খুললে যে পণ্য আগে থেকে সিলেক্ট থাকবে"), sel));
+
+    root.appendChild(h("div", { class: "sub-h", style: "margin-top:26px" }, "🚚 ডেলিভারি চার্জ"));
+    var S = cfg.shipping, box = h("div", { class: "list" });
+    S.forEach(function (s, i) {
+      box.appendChild(h("div", { class: "prod" },
+        h("div", { class: "prod-h" }, h("b", {}, s.label || "নতুন"), h("code", {}, s.id),
+          h("button", { class: "ib", type: "button", disabled: S.length < 2, onclick: function () { if (S.length > 1 && confirm("এই ডেলিভারি অপশনটি মুছবেন?")) { S.splice(i, 1); dirty(); render(); } } }, "🗑")),
+        h("div", { class: "row2" }, field("নাম (যেমন: ঢাকার ভিতরে)", "shipping." + i + ".label"), field("চার্জ", "shipping." + i + ".charge", { num: true }))));
+    });
+    root.appendChild(box);
+    root.appendChild(h("button", { class: "btn ghost block", type: "button", onclick: function () { S.push({ id: "s" + Date.now().toString(36), label: "", charge: 0 }); dirty(); render(); } }, "＋ নতুন ডেলিভারি অপশন"));
+    var ss = h("select", {});
+    S.forEach(function (s) { var o = h("option", { value: s.id }, s.label || s.id); if (s.id === cfg.defaultShipping) o.selected = true; ss.appendChild(o); });
+    ss.onchange = function () { cfg.defaultShipping = ss.value; dirty(); };
+    root.appendChild(h("div", { class: "fld mt" }, h("label", {}, "আগে থেকে সিলেক্ট থাকবে"), ss));
+    root.appendChild(h("div", { class: "row2" },
+      field("ফ্রি ডেলিভারি (এত টাকার বেশি কিনলে)", "freeShippingMinTotal", { num: true, hint: "০ দিলে ফ্রি ডেলিভারি বন্ধ" }),
+      field("প্রতি পণ্যে সর্বোচ্চ কতটি", "maxQty", { num: true })));
+  }
+
+  /* ---------- general ---------- */
+  function viewGeneral(root) {
+    root.appendChild(h("div", { class: "cbox" },
+      h("h3", {}, "🌐 ওয়েবসাইট"), field("ব্রাউজার ট্যাবের টাইটেল", "pageTitle", { hint: "গুগল সার্চ ও ব্রাউজার ট্যাবে এটি দেখা যায়" }),
+      field("টাকার চিহ্ন", "currency", { hint: "যেমন: ৳" })));
+    root.appendChild(h("div", { class: "cbox mt" },
+      h("h3", {}, "📞 ভাসমান যোগাযোগ বাটন"), h("p", {}, "খালি রাখলে বাটন দেখাবে না"),
+      h("div", { class: "row2" }, field("হোয়াটসঅ্যাপ নম্বর", "contact.whatsapp", { ph: "8801700000000", hint: "দেশের কোডসহ, যেমন 8801700000000" }), field("ফোন নম্বর", "contact.phone", { ph: "01700000000" }))));
+  }
+
+  /* ---------- রং ও থিম ---------- */
+  var COLORS = [
+    ["green", "প্রধান সবুজ", "হেডার, টাইটেল, বাটন"], ["green-2", "হালকা সবুজ (গ্রেডিয়েন্ট)", ""], ["mint", "অতি হালকা সবুজ", "কার্ডের ব্যাকগ্রাউন্ড"],
+    ["amber", "বাটনের হলুদ", "অর্ডার বাটন"], ["amber-2", "বাটনের কমলা", "গ্রেডিয়েন্টের শেষ রং"], ["amber-dark", "বাটনের নিচের ছায়া", ""],
+    ["cream", "পেজের ব্যাকগ্রাউন্ড", ""], ["cream-2", "হালকা ব্যাকগ্রাউন্ড ২", "গ্যালারির ব্যাকগ্রাউন্ড"], ["gold", "সোনালি", "বর্ডার ও সাজসজ্জা"],
+    ["brown", "গাঢ় ব্রাউন", "স্ট্রিপ ও গাঢ় অংশ"], ["brown-2", "গাঢ় ব্রাউন ২", "গ্রেডিয়েন্টের শেষ রং"], ["text", "লেখার রং", ""],
+    ["red", "লাল", "নোটিশ ব্যাজ"], ["red-dark", "গাঢ় লাল", "ড্রপ-শ্যাডো"], ["red-2", "উজ্জ্বল লাল", ""]
+  ];
+  var PRESETS = [
+    ["🍯 মধু সবুজ (ডিফল্ট)", null],
+    ["💎 রয়্যাল ব্লু", { "green": "#1E3A8A", "green-2": "#2563EB", "mint": "#EEF4FF", "amber": "#FBBF24", "amber-2": "#F59E0B", "amber-dark": "#B45309", "cream": "#F5F8FF", "cream-2": "#E6EEFF", "gold": "#60A5FA", "brown": "#0F172A", "brown-2": "#1E293B", "text": "#0F172A", "red": "#E11D48", "red-dark": "#9F1239", "red-2": "#F43F5E" }],
+    ["🌿 প্রিমিয়াম গ্রিন", { "green": "#064E3B", "green-2": "#059669", "mint": "#ECFDF5", "amber": "#FCD34D", "amber-2": "#F59E0B", "amber-dark": "#B45309", "cream": "#F7FBF8", "cream-2": "#E6F4EA", "gold": "#D4AF37", "brown": "#052E22", "brown-2": "#0B3D2E", "text": "#10281F", "red": "#DC2626", "red-dark": "#991B1B", "red-2": "#EF4444" }],
+    ["🍷 মেরুন", { "green": "#7F1D1D", "green-2": "#B91C1C", "mint": "#FEF2F2", "amber": "#FBBF24", "amber-2": "#F59E0B", "amber-dark": "#B45309", "cream": "#FFF8F1", "cream-2": "#FFEBD6", "gold": "#D97706", "brown": "#2A0E0E", "brown-2": "#431515", "text": "#2A1212", "red": "#DC2626", "red-dark": "#7F1D1D", "red-2": "#EF4444" }],
+    ["🔮 পার্পল", { "green": "#4C1D95", "green-2": "#7C3AED", "mint": "#F5F3FF", "amber": "#FACC15", "amber-2": "#F97316", "amber-dark": "#A16207", "cream": "#FBF8FF", "cream-2": "#EFE7FF", "gold": "#C4B5FD", "brown": "#1E1B4B", "brown-2": "#312E81", "text": "#1E1B4B", "red": "#E11D48", "red-dark": "#9F1239", "red-2": "#F43F5E" }],
+    ["🍊 অরেঞ্জ", { "green": "#9A3412", "green-2": "#EA580C", "mint": "#FFF7ED", "amber": "#FDE047", "amber-2": "#F59E0B", "amber-dark": "#A16207", "cream": "#FFFBEB", "cream-2": "#FEF3C7", "gold": "#FB923C", "brown": "#431407", "brown-2": "#7C2D12", "text": "#2B1A0C", "red": "#DC2626", "red-dark": "#991B1B", "red-2": "#EF4444" }]
+  ];
+  function viewColors(root) {
+    var T = cfg.theme = cfg.theme || {};
+    root.appendChild(h("div", { class: "hint" }, h("b", {}, "🎨 "), "তৈরি থিম বেছে নিন, অথবা নিচের প্রতিটি রং আলাদা করে বদলান। “লাইভ প্রিভিউ” খুললে সাথে সাথে দেখা যাবে।"));
+    var pr = h("div", { class: "preset" });
+    PRESETS.forEach(function (p) {
+      var t = p[1] || DEF.theme || {};
+      var strip = h("div", { class: "sw-strip" }, ["green", "green-2", "amber", "amber-2", "cream", "brown"].map(function (k) { var i = h("i", {}); i.style.background = t[k] || "#ccc"; return i; }));
+      pr.appendChild(h("button", { class: "pbtn", type: "button", onclick: function () { cfg.theme = clone(t); dirty(); render(); toast("থিম বসানো হয়েছে", "ok"); } }, p[0], strip));
+    });
+    root.appendChild(pr);
+    root.appendChild(h("div", { class: "sub-h", style: "margin-top:20px" }, "প্রতিটি রং আলাদাভাবে"));
+    var box = h("div", { class: "colr" });
+    COLORS.forEach(function (c) {
+      var inp = h("input", { type: "color" }); inp.value = T[c[0]] || "#000000";
+      inp.oninput = function () { T[c[0]] = inp.value; dirty(); };
+      box.appendChild(h("label", {}, inp, h("span", {}, c[1], c[2] ? h("small", {}, c[2]) : null)));
+    });
+    root.appendChild(box);
+  }
+
+  /* ---------- Google Sheet ও API ---------- */
+  function sheetId(v) { v = String(v || "").trim(); var m = v.match(/\/d\/([a-zA-Z0-9_-]+)/); if (m) return m[1]; return /^[a-zA-Z0-9_-]{25,}$/.test(v) ? v : ""; }
+  function lsGet(k) { try { return localStorage.getItem(k) || ""; } catch (e) { return ""; } }
+  function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+  function genCode() {
+    var id = sheetId(lsGet("hn_admin_sheet"));
+    if (!id) return null;
+    var site = String(lsGet("hn_admin_site") || "").trim().replace(/\/+$/, "");
+    return CODE_TPL.replace(/var SPREADSHEET_ID = ".*?";/, 'var SPREADSHEET_ID = "' + id + '";').replace(/var SITE_URL = ".*?";/, 'var SITE_URL = "' + site + '";');
+  }
+  function viewSheet(root) {
+    if (!lsGet("hn_admin_site") && /^https?:/.test(location.protocol)) lsSet("hn_admin_site", location.origin);
+    root.appendChild(h("div", { class: "hint" }, h("b", {}, "📊 "), "নিচের ধাপ অনুসরণ করুন: (১) শিটের লিংক দিন → (২) Code.gs কপি করে Apps Script এ পেস্ট করুন → (৩) Deploy করে পাওয়া /exec লিংক নিচের API ঘরে বসান।"));
+    var pg = h("div", { class: "pg" });
+    var sh = h("div", { class: "fld" }, h("label", {}, "১. আপনার Google Sheet এর লিংক"));
+    var sIn = h("input", { type: "text", placeholder: "https://docs.google.com/spreadsheets/d/…/edit" }); sIn.value = lsGet("hn_admin_sheet");
+    var sMsg = h("small", {});
+    function chk() { var id = sheetId(sIn.value); sMsg.textContent = !sIn.value ? "শুধু এই ডিভাইসে সংরক্ষিত থাকে, ওয়েবসাইটে প্রকাশ হয় না" : (id ? "✅ শিট আইডি পাওয়া গেছে: " + id.slice(0, 12) + "…" : "⚠️ সঠিক গুগল শিটের লিংক দিন"); }
+    sIn.oninput = function () { lsSet("hn_admin_sheet", sIn.value.trim()); chk(); };
+    sh.appendChild(sIn); sh.appendChild(sMsg); chk(); pg.appendChild(sh);
+
+    var uIn = h("input", { type: "text", placeholder: "https://আপনার-সাইট.vercel.app" }); uIn.value = lsGet("hn_admin_site");
+    uIn.oninput = function () { lsSet("hn_admin_site", uIn.value.trim()); };
+    pg.appendChild(h("div", { class: "fld" }, h("label", {}, "২. আপনার ওয়েবসাইটের লিংক (Vercel)"), uIn, h("small", {}, "এটি দিলে অর্ডারের দাম সবসময় ওয়েবসাইটের দামের সাথে মিলিয়ে নেওয়া হয়। শুধু এই ডিভাইসে সংরক্ষিত থাকে।")));
+
+    var btns = h("div", { style: "display:flex;gap:8px;flex-wrap:wrap;margin-top:14px" },
+      h("button", { class: "btn pri", type: "button", onclick: function () {
+        var c = genCode(); if (!c) { toast("আগে সঠিক শিটের লিংক দিন", "bad"); return; }
+        var done = function () { toast("✅ Code.gs কপি হয়েছে – Apps Script এ পেস্ট করুন", "ok"); };
+        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(c).then(done, function () { fallbackCopy(c); done(); }); else { fallbackCopy(c); done(); }
+      } }, "📋 Code.gs কপি করুন"),
+      h("button", { class: "btn amb", type: "button", onclick: function () { var c = genCode(); if (!c) { toast("আগে সঠিক শিটের লিংক দিন", "bad"); return; } download("Code.gs", c, "text/plain"); } }, "⬇️ Code.gs ডাউনলোড"));
+    pg.appendChild(btns);
+    pg.appendChild(h("div", { class: "sub-h", style: "margin-top:20px" }, "৩. Apps Script এ কী করবেন"));
+    pg.appendChild(h("ol", { class: "steps" },
+      h("li", {}, "গুগল শিট খুলুন → ", h("b", {}, "Extensions → Apps Script")),
+      h("li", {}, "আগের সব কোড মুছে কপি করা ", h("b", {}, "Code.gs"), " পেস্ট করুন → Save 💾"),
+      h("li", {}, "উপরের ড্রপডাউন থেকে ", h("code", {}, "setupAll"), " সিলেক্ট করে ▶ Run (Permission দিন) – Orders, User Activity, Pixel Events, Report, Dashboard ট্যাব নিজে তৈরি হবে"),
+      h("li", {}, h("b", {}, "Deploy → New deployment → Web app"), " (Execute as: Me, Access: Anyone) → Deploy"),
+      h("li", {}, "পাওয়া ", h("code", {}, "/exec"), " লিংকটি নিচের ঘরে বসান")));
+    root.appendChild(pg);
+    root.appendChild(h("div", { class: "pg mt" }, field("৪. API লিংক (Apps Script /exec)", "apiEndpoint", { ph: "https://script.google.com/macros/s/…/exec", hint: "এটি ওয়েবসাইটে অর্ডার পাঠানোর ঠিকানা। পরে কোড বদলালে Deploy → Manage deployments → New version দিলে লিংক একই থাকে।" })));
+  }
+  function fallbackCopy(t) { var ta = h("textarea", {}); ta.value = t; ta.style.position = "fixed"; ta.style.opacity = "0"; document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); } catch (e) {} ta.remove(); }
+
+  /* ---------- ট্র্যাকিং ও ফ্রড ---------- */
+  function viewTracking(root) {
+    var T = cfg.tracking = cfg.tracking || { fbPixelId: "", activity: true, sample: 100 };
+    root.appendChild(h("div", { class: "hint" }, h("b", {}, "📈 "), "এখানে Facebook Pixel চালু করা যায়, আর ভিজিটরের তথ্য (কোথা থেকে এলো, কতক্ষণ থাকলো, কতটুকু স্ক্রল করলো, অর্ডার করলো কিনা) আপনার গুগল শিটে জমা হয়। কাস্টমারের নাম/ফোন ট্র্যাকিংয়ে যায় না।"));
+    var pg = h("div", { class: "pg" });
+    pg.appendChild(field("Facebook Pixel ID", "tracking.fbPixelId", { ph: "যেমন: 123456789012345", hint: "খালি রাখলে Facebook Pixel চালু হবে না (শিটে ইভেন্ট লগ তবুও জমা হবে)।" }));
+    pg.appendChild(h("div", { class: "fld" }, sw(T.activity !== false, function (v) { T.activity = v; dirty(); }, "ভিজিটর অ্যাক্টিভিটি ও Pixel ইভেন্ট শিটে সেভ করুন")));
+    pg.appendChild(field("কত শতাংশ ভিজিটরের তথ্য সেভ হবে (১–১০০)", "tracking.sample", { num: true, hint: "প্রতিদিন হাজার হাজার ভিজিটর আসলে ৩০–৫০ দিন, তাহলে শিট ও Apps Script এর লোড কমবে। অর্ডার সবসময় ১০০% সেভ হয়।" }));
+    root.appendChild(pg);
+    root.appendChild(h("div", { class: "pg mt" }, h("div", { class: "sub-h" }, "🛡️ ফ্রড এলার্ট"),
+      field("একই মোবাইল নাম্বারে কত মিনিটের মধ্যে আবার অর্ডার করলে ফ্রড এলার্ট দেখাবে", "fraudMinutes", { num: true, hint: "ডিফল্ট ২ মিনিট। অন্য নাম্বার দিয়ে অর্ডারে কোনো সমস্যা নেই। (Code.gs এ SITE_URL দেওয়া থাকলে সার্ভারও এই সময় মানে)" })));
+    root.appendChild(h("div", { class: "pg mt" }, h("div", { class: "sub-h" }, "📑 গুগল শিটে কোন ট্যাবে কী জমা হয়"),
+      h("ol", { class: "steps" },
+        h("li", {}, h("b", {}, "Orders"), " – কাস্টমারের অর্ডার (নাম, ফোন, ঠিকানা, পণ্য, বিল, স্ট্যাটাস, ট্রাফিক সোর্স)"),
+        h("li", {}, h("b", {}, "User Activity"), " – প্রতি ভিজিটরের এক লাইন (সোর্স, ডিভাইস, স্ক্রল %, সময়, বাটন ক্লিক, চেকআউটে পৌঁছেছে কিনা, অর্ডার করেছে কিনা)"),
+        h("li", {}, h("b", {}, "Pixel Events"), " – PageView, ViewContent, AddToCart, InitiateCheckout, Purchase এর লগ"),
+        h("li", {}, h("b", {}, "Report"), " – গত ১৪ দিনের ভিজিটর, অর্ডার, বিক্রি, কনভার্সন, সোর্স ও ডিভাইস রিপোর্ট"),
+        h("li", {}, h("b", {}, "Dashboard"), " – মোট অর্ডার, আজকের অর্ডার, বিক্রি, স্ট্যাটাস, শীর্ষ জেলা"))));
+  }
+
+  /* ---------- গাইড ---------- */
+  function viewGuide(root) {
+    root.appendChild(h("div", { class: "cbox" }, h("h3", {}, "📘 পরিবর্তন লাইভ করার ধাপ"),
+      h("ol", { class: "steps" },
+        h("li", {}, "এখানে সব পরিবর্তন করুন। ", h("b", {}, "লাইভ প্রিভিউ"), " দিয়ে দেখে নিন।"),
+        h("li", {}, "উপরের ", h("b", {}, "⬇️ আপডেট ডাউনলোড"), " চাপুন।"),
+        h("li", {}, "নতুন ছবি না থাকলে শুধু ", h("code", {}, "config.js"), " নামবে – এটি প্রজেক্টের ", h("code", {}, "js/"), " ফোল্ডারে রিপ্লেস করুন।"),
+        h("li", {}, "নতুন ছবি থাকলে ", h("code", {}, "site-update.zip"), " নামবে – Extract করে প্রজেক্ট ফোল্ডারে Merge/Replace করুন।"),
+        h("li", {}, h("code", {}, "git add . && git commit -m \"content update\" && git push"), " করুন। Vercel নিজে ডিপ্লয় করবে।")),
+      h("p", { style: "margin-top:10px" }, "ℹ️ কাস্টমারের অর্ডার, ভিজিটর অ্যাক্টিভিটি ও Pixel ইভেন্ট আপনার গুগল শিটে জমা হয়।")));
+  }
+
+  /* ---------- backup ---------- */
+  function download(name, blobOrText, type) {
+    var blob = blobOrText instanceof Blob ? blobOrText : new Blob([blobOrText], { type: type || "text/plain" });
+    var a = h("a", { href: URL.createObjectURL(blob), download: name });
+    document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 800);
+  }
+  function viewBackup(root) {
+    var file = h("input", { type: "file", accept: ".json,application/json", hidden: true });
+    file.onchange = function () {
+      var f = file.files[0]; if (!f) return;
+      var r = new FileReader();
+      r.onload = function () {
+        try { cfg = merge(clone(DEF), JSON.parse(r.result)); fixCfg(); dirty(); render(); toast("ব্যাকআপ লোড হয়েছে", "ok"); }
+        catch (e) { toast("ফাইলটি সঠিক নয়", "bad"); }
+      };
+      r.readAsText(f);
+    };
+    root.appendChild(h("div", { class: "cards" },
+      h("div", { class: "cbox" }, h("h3", {}, "💾 সেটিংস ব্যাকআপ (.json)"), h("p", {}, "সব সেটিংস একটি ফাইলে সংরক্ষণ করুন।"),
+        h("button", { class: "btn pri", type: "button", onclick: function () { download("honey-site-backup.json", JSON.stringify(payload(), null, 2), "application/json"); } }, "ডাউনলোড")),
+      h("div", { class: "cbox" }, h("h3", {}, "📥 ব্যাকআপ থেকে ফেরত আনুন"), h("p", {}, "আগের ব্যাকআপ ফাইল বেছে নিন।"),
+        h("button", { class: "btn", type: "button", onclick: function () { file.click(); } }, "ফাইল বাছুন"), file),
+      h("div", { class: "cbox" }, h("h3", {}, "♻️ অসংরক্ষিত পরিবর্তন মুছুন"), h("p", {}, "ডাউনলোড না করা সব পরিবর্তন বাতিল হয়ে বর্তমান প্রকাশিত অবস্থায় ফিরবে।"),
+        h("button", { class: "btn danger", type: "button", onclick: function () {
+          if (!confirm("সব অসংরক্ষিত পরিবর্তন মুছে ফেলবেন?")) return;
+          try { localStorage.removeItem(DK); } catch (e) {}
+          cfg = clone(DEF); fixCfg(); pending = {}; isDirty = false; exported = false; status(); render(); toast("পরিবর্তন বাতিল হয়েছে", "ok");
+        } }, "বাতিল করুন"))));
+  }
+
+  /* ---------- নেভিগেশন ও রেন্ডার ---------- */
+  var GENERAL = [["products", "📦", "পণ্য ও দাম"], ["colors", "🎨", "রং ও থিম"], ["order", "🔀", "সেকশনের ক্রম"], ["general", "⚙️", "সাধারণ সেটিংস"], ["sheet", "📊", "Google Sheet ও API"], ["tracking", "📈", "ট্র্যাকিং ও ফ্রড"], ["guide", "📘", "লাইভ করার নিয়ম"], ["backup", "💾", "ব্যাকআপ"]];
+  function go(p) { page = p; closeMenu(); render(); window.scrollTo(0, 0); }
+  function closeMenu() { $("#side").classList.remove("open"); $("#scrim").classList.remove("show"); }
+  function renderSide() {
+    if (!cfg) return;
+    normOrder();
+    var s = $("#side"); s.textContent = "";
+    s.appendChild(h("div", { class: "side-h" }, "🍯 মেনু"));
+    s.appendChild(h("div", { class: "side-grp" }, "কনটেন্ট সেকশন (পেজের ক্রমে)"));
+    cfg.order.forEach(function (id) {
+      var d = secInfo(id); if (!d) return;
+      s.appendChild(h("button", { class: "si" + (page === "sec:" + id ? " on" : ""), type: "button", onclick: function () { go("sec:" + id); } },
+        h("span", { class: "ic" }, d.ic), h("span", { class: "tx" }, d.t), h("span", { class: "dot" + (isOn(id) ? "" : " off"), title: isOn(id) ? "দেখাচ্ছে" : "লুকানো" })));
+    });
+    s.appendChild(h("button", { class: "si add", type: "button", onclick: function () { addCustom(); closeMenu(); } }, "＋ নতুন সেকশন যোগ করুন"));
+    s.appendChild(h("div", { class: "side-grp" }, "সেটিংস"));
+    GENERAL.forEach(function (g) {
+      s.appendChild(h("button", { class: "si" + (page === g[0] ? " on" : ""), type: "button", onclick: function () { go(g[0]); } }, h("span", { class: "ic" }, g[1]), h("span", { class: "tx" }, g[2])));
+    });
+    s.appendChild(h("div", { class: "side-grp" }, "অ্যাকাউন্ট"));
+    s.appendChild(h("button", { class: "si", type: "button", onclick: doLogout }, h("span", { class: "ic" }, "⎋"), h("span", { class: "tx" }, "লগআউট")));
+  }
+  function render() {
+    if (!cfg) return;
+    renderSide();
+    var main = $("#main"); main.textContent = "";
+    var views = { products: viewProducts, colors: viewColors, order: viewOrder, general: viewGeneral, sheet: viewSheet, tracking: viewTracking, guide: viewGuide, backup: viewBackup };
+    if (page.indexOf("sec:") === 0) viewSection(main, page.slice(4));
+    else {
+      var g = GENERAL.filter(function (x) { return x[0] === page; })[0];
+      if (g) main.appendChild(h("div", { class: "ph" }, h("div", { class: "sec-ic" }, g[1]), h("div", { class: "grow" }, h("h2", {}, g[2]))));
+      (views[page] || viewOrder)(main);
+    }
+  }
+
+  /* ---------- ডাউনলোড ---------- */
+  function validate() {
+    var act = cfg.products.filter(function (p) { return p.active !== false; });
+    if (!act.length) return "কমপক্ষে একটি পণ্য চালু রাখুন।";
+    var ids = {}; for (var i = 0; i < cfg.products.length; i++) { var p = cfg.products[i]; if (!String(p.name || "").trim()) return "সব পণ্যের নাম দিন (পণ্য #" + (i + 1) + ")।"; if (ids[p.id]) return "পণ্যের কোড ডুপ্লিকেট।"; ids[p.id] = 1; if (!(Number(p.price) > 0)) return "“" + p.name + "” এর দাম দিন।"; }
+    if (!cfg.shipping.length) return "কমপক্ষে একটি ডেলিভারি অপশন রাখুন।";
+    var t = cfg.tracking || {}; if (t.sample !== "" && t.sample != null && !(Number(t.sample) >= 1 && Number(t.sample) <= 100)) return "ট্র্যাকিংয়ের শতাংশ ১ থেকে ১০০ এর মধ্যে দিন।";
+    if (cfg.fraudMinutes !== "" && cfg.fraudMinutes != null && !(Number(cfg.fraudMinutes) >= 1 && Number(cfg.fraudMinutes) <= 120)) return "ফ্রড এলার্টের সময় ১ থেকে ১২০ মিনিটের মধ্যে দিন।";
+    for (var j = 0; j < cfg.shipping.length; j++) if (!String(cfg.shipping[j].label || "").trim()) return "সব ডেলিভারি অপশনের নাম দিন।";
+    if (!act.some(function (p) { return p.id === cfg.defaultProduct; })) cfg.defaultProduct = act[0].id;
+    if (!cfg.shipping.some(function (s) { return s.id === cfg.defaultShipping; })) cfg.defaultShipping = cfg.shipping[0].id;
+    return "";
+  }
+  function configText() {
+    var out = merge(clone(DEF), payload());
+    out.products.forEach(function (p) { if (p.oldPrice === "" || p.oldPrice == null) p.oldPrice = 0; if (p.badge == null) p.badge = ""; });
+    return "/* এই ফাইলটি Admin Panel (admin.html) দিয়ে তৈরি হয়। হাতে এডিট না করে Admin Panel ব্যবহার করুন। */\nwindow.SITE_CONFIG = " + JSON.stringify(out, null, 2) + ";\n";
+  }
+  function save() {
+    var err = validate(); if (err) { toast(err, "bad"); return; }
+    var text = configText(), paths = Object.keys(pending), enc = new TextEncoder();
+    // শুধু যেসব নতুন ছবি এখনো কনফিগে ব্যবহৃত হচ্ছে সেগুলোই জিপে যাবে
+    var used = JSON.stringify(payload());
+    paths = paths.filter(function (p) { return used.indexOf(p) > -1; });
+    if (!paths.length) {
+      download("config.js", text, "text/javascript");
+      toast("config.js নামানো হয়েছে → প্রজেক্টের js/ ফোল্ডারে রিপ্লেস করুন", "ok");
+    } else {
+      Promise.all(paths.map(function (p) { return pending[p].blob.arrayBuffer().then(function (b) { return { name: p, data: new Uint8Array(b) }; }); })).then(function (files) {
+        files.unshift({ name: "js/config.js", data: enc.encode(text) });
+        download("site-update.zip", makeZip(files), "application/zip");
+        toast("site-update.zip নামানো হয়েছে → Extract করে প্রজেক্টে মার্জ করুন", "ok");
+      });
+    }
+    exported = true; status();
+    try { localStorage.setItem(DK, JSON.stringify({ base: baseSig, data: payload() })); } catch (e) {}
+  }
+
+  /* ---------- লগইন / লগআউট ---------- */
+  function fixCfg() {
+    cfg.contact = cfg.contact || {}; cfg.sections = cfg.sections || {}; cfg.copy = cfg.copy || {}; cfg.theme = cfg.theme || {};
+    cfg.custom = cfg.custom || []; cfg.tracking = cfg.tracking || { fbPixelId: "", activity: true, sample: 100 };
+    cfg.products.forEach(function (p) { if (p.active === undefined) p.active = true; if (p.oldPrice == null || p.oldPrice === 0) p.oldPrice = p.oldPrice || ""; if (p.badge == null) p.badge = ""; });
+    cfg.custom.forEach(function (c) { c.images = c.images || []; c.cards = c.cards || []; });
+    normOrder();
+  }
+  function showLogin(msg) {
+    $("#appView").hidden = true; $("#loginView").hidden = false;
+    var e = $("#loginErr"); e.hidden = !msg; e.textContent = msg || "";
+  }
+  function start() {
+    $("#loginView").hidden = true; $("#appView").hidden = false;
+    var draft = null;
+    try { var d = JSON.parse(localStorage.getItem(DK) || "null"); if (d && d.base === baseSig) draft = d.data; else localStorage.removeItem(DK); } catch (e) {}
+    cfg = merge(clone(DEF), draft || {});
+    fixCfg();
+    if (draft) { isDirty = true; toast("আগের অসংরক্ষিত ড্রাফট ফিরিয়ে আনা হয়েছে", "ok"); }
+    status(); render();
+  }
+  function doLogout() {
+    if (((isDirty || Object.keys(pending).length) && !exported) && !confirm("ডাউনলোড করা হয়নি এমন পরিবর্তন আছে (ড্রাফট সেভ থাকবে, তবে নতুন ছবি হারাবে)। লগআউট করবেন?")) return;
+    try { sessionStorage.removeItem("hn_adm_ok"); } catch (e) {}
+    isDirty = false; pending = {}; closeMenu(); showLogin("");
+  }
+  $("#loginForm").onsubmit = function (e) {
+    e.preventDefault();
+    var pw = $("#pw").value;
+    setTimeout(function () {
+      if (sha256("hn-admin:" + pw) === PW_HASH) {
+        try { sessionStorage.setItem("hn_adm_ok", "1"); } catch (x) {}
+        $("#pw").value = ""; start();
+      } else { showLogin("পাসওয়ার্ড ভুল হয়েছে।"); }
+    }, 350);
+  };
+  $("#saveBtn").onclick = save;
+  $("#menuBtn").onclick = function () { $("#side").classList.add("open"); $("#scrim").classList.add("show"); };
+  $("#scrim").onclick = closeMenu;
+  $("#previewBtn").onclick = function () {
+    try { localStorage.setItem(DK, JSON.stringify({ base: baseSig, data: payload() })); } catch (e) {}
+    if (window.innerWidth >= 1000) {
+      var on = $("#pv").hidden;
+      $("#pv").hidden = !on;
+      if (on) $("#pvFrame").src = "index.html?preview=1";
+    } else window.open("index.html?preview=1", "_blank");
+  };
+  $("#pvClose").onclick = function () { $("#pv").hidden = true; };
+  document.addEventListener("keydown", function (e) { if ((e.ctrlKey || e.metaKey) && e.key === "s" && cfg) { e.preventDefault(); save(); } });
+
+  var ok = false; try { ok = sessionStorage.getItem("hn_adm_ok") === "1"; } catch (e) {}
+  if (ok) start();
+})();
+
+</script>
+</body>
+</html>
