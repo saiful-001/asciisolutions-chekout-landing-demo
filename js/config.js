@@ -1,6 +1,6 @@
 /* এই ফাইলটি Admin Panel (admin.html) দিয়ে তৈরি হয়। হাতে এডিট না করে Admin Panel ব্যবহার করুন। */
 window.SITE_CONFIG = {
-  "themeId": "theme2",
+  "themeId": "theme1",
   "googleSheetUrl": "https://docs.google.com/spreadsheets/d/1foOt8prRFDxrXUg25etF1zo_uDpWHs8h-276ZrJDwDU/edit?gid=0#gid=0",
   "apiEndpoint": "https://script.google.com/macros/s/AKfycbxQOYCuVLxtdgXQoiGM_ylWLU6XleOlxHd6oxrKb5alSw1C1pugywwKVZResS5Ro8JJ/exec",
   "sections": {
