@@ -185,7 +185,8 @@
   }
 
   /* ---------- লাইভ গুগল শিট ডেমো কার্ড ---------- */
-  function sheetOn() { var d = C.sheetDemo; return !!(d && d.enabled !== false && d.url); }
+  function sheetOn() { var d = C.sheetDemo; return !!(d && d.enabled === true && d.url); }
+  function sheetSuccessOn() { var d = C.sheetDemo; return !!(d && d.enabled === true && d.showInSuccess === true && d.url); }
   function renderSheetDemo() {
     var card = $("#sheetDemoCard");
     if (!card) return;
@@ -1112,7 +1113,7 @@
     function done(d) {
       state.reqId = null;
       var okText = "🎉 ধন্যবাদ! আপনার অর্ডারটি সফলভাবে গ্রহণ করা হয়েছে।<br>আপনার অর্ডার আইডি: <strong>" + esc(d.orderId) + "</strong> | সর্বমোট বিল: <strong>" + money(d.total) + "</strong>। আমরা অতি দ্রুত আপনার সাথে যোগাযোগ করব।";
-      if (sheetOn()) {
+      if (sheetSuccessOn()) {
         okText += '<br><a href="' + esc(C.sheetDemo.url) + '" target="_blank" rel="noopener noreferrer" class="order-sheet-link">📊 শিটে আপনার অর্ডারটি সেভ হওয়া এখনই দেখুন ➔</a>';
       }
       showMsg("ok", okText);

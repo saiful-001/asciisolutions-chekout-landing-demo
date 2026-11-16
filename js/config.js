@@ -34,7 +34,8 @@ window.SITE_CONFIG = {
   ],
   "pageTitle": "খাঁটি মধু ও প্রিমিয়াম হানি নাট – অর্ডার করুন",
   "sheetDemo": {
-    "enabled": true,
+    "enabled": false,
+    "showInSuccess": false,
     "url": "https://docs.google.com/spreadsheets/d/1foOt8prRFDxrXUg25etF1zo_uDpWHs8h-276ZrJDwDU/edit?gid=0#gid=0",
     "title": "📊 আপনার ডাটা কীভাবে সেভ হবে তা দেখে নিন",
     "subtitle": "অর্ডার সাবমিট করার সাথে সাথে কাস্টমারের নাম, মোবাইল, ঠিকানা ও অর্ডার তথ্য কীভাবে প্রফেশনাল গুগল শিটে স্বয়ংক্রিয়ভাবে জমা হয় তা সরাসরি দেখুন।",
