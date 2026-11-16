@@ -23,7 +23,7 @@
 
 // আপনার গুগল শিটের লিংক অথবা আইডি (admin.html এর "Google Sheet ও API" পেজ থেকে Code.gs তৈরি করলে এটি নিজেই বসে যায়)
 // খালি রাখলে: যে শিট থেকে Extensions → Apps Script খুলেছেন সেটিই ব্যবহার হবে
-var SPREADSHEET_ID = "";
+var SPREADSHEET_ID = "1Zj6Zr-Zm4ypDHxR8O4l2lyJ3P3U3kty1_VNgfsDP20A";
 
 // 🌐 আপনার Vercel ওয়েবসাইটের লিংক (যেমন: https://my-honey.vercel.app)
 //    এটি দিলে অর্ডারের দাম সবসময় ওয়েবসাইটের js/config.js থেকে যাচাই হয়, তাই

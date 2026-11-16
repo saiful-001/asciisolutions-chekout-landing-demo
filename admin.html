@@ -15,6 +15,8 @@ button{font-family:inherit;cursor:pointer}
 input,textarea,select{font:inherit;color:inherit}
 [hidden]{display:none!important}
 :focus-visible{outline:3px solid #1a73e8;outline-offset:2px}
+.ok-msg{color:#0e6445;font-weight:600;display:block;margin-top:4px}
+.warn-msg{color:#b91c1c;font-weight:600;display:block;margin-top:4px}
 
 /* ---------- login ---------- */
 .login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:radial-gradient(circle at 50% 0,#fff,var(--cream) 70%)}
@@ -336,7 +338,7 @@ code{background:#f4ecd8;padding:1px 6px;border-radius:6px;font-size:.85em}
   var PW_HASH = "d8560ca7bb2875b1084b7ae1d810356b00bce2ac3edf2abe470731757067137d";
   var DK = "hn_admin_draft";
   var cfg = null, isDirty = false, page = "sec:top", pending = {}, exported = false;
-  var KEYS = ["apiEndpoint", "pageTitle", "sections", "order", "videoUrl", "videoPoster", "currency", "contact", "copy", "products", "defaultProduct", "shipping", "defaultShipping", "freeShippingMinTotal", "maxQty", "sheetDemo", "theme", "custom", "tracking", "fraudMinutes"];
+  var KEYS = ["themeId", "apiEndpoint", "googleSheetUrl", "siteUrl", "pageTitle", "sections", "order", "videoUrl", "videoPoster", "currency", "contact", "copy", "products", "defaultProduct", "shipping", "defaultShipping", "freeShippingMinTotal", "maxQty", "sheetDemo", "theme", "custom", "tracking", "fraudMinutes"];
   var IMG_KEYS = ["benefit", "offerBg", "gallery", "reviews", "documents"];
   function payload() {
     var out = {};
@@ -346,6 +348,13 @@ code{background:#f4ecd8;padding:1px 6px;border-radius:6px;font-size:.85em}
   }
   var baseSig = sha256(JSON.stringify(DEF));
   var dt;
+  function updatePreview() {
+    try { localStorage.setItem(DK, JSON.stringify({ base: baseSig, data: payload() })); } catch (e) {}
+    var pv = $("#pvFrame");
+    if (pv && pv.contentWindow) {
+      try { pv.contentWindow.postMessage({ type: "hn_preview_update", data: payload() }, "*"); } catch (e) {}
+    }
+  }
   function status() {
     var n = Object.keys(pending).length;
     $("#dirtyTxt").textContent = !isDirty && !n ? "কোনো পরিবর্তন নেই" : (exported ? "✅ ডাউনলোড হয়েছে – এবার commit/push করুন" : "⚠️ পরিবর্তন আছে – ডাউনলোড বাকি" + (n ? " (📷 " + bn(n) + "টি নতুন ছবি)" : ""));
@@ -355,8 +364,8 @@ code{background:#f4ecd8;padding:1px 6px;border-radius:6px;font-size:.85em}
     isDirty = v !== false; exported = false; status();
     clearTimeout(dt);
     dt = setTimeout(function () {
-      try { localStorage.setItem(DK, JSON.stringify({ base: baseSig, data: payload() })); } catch (e) {}
-    }, 250);
+      updatePreview();
+    }, 200);
   }
   window.addEventListener("beforeunload", function (e) { if ((isDirty || Object.keys(pending).length) && !exported) { e.preventDefault(); e.returnValue = ""; } });
 
@@ -689,82 +698,267 @@ code{background:#f4ecd8;padding:1px 6px;border-radius:6px;font-size:.85em}
 
   /* ---------- রং ও থিম ---------- */
   var COLORS = [
-    ["green", "প্রধান সবুজ", "হেডার, টাইটেল, বাটন"], ["green-2", "হালকা সবুজ (গ্রেডিয়েন্ট)", ""], ["mint", "অতি হালকা সবুজ", "কার্ডের ব্যাকগ্রাউন্ড"],
-    ["amber", "বাটনের হলুদ", "অর্ডার বাটন"], ["amber-2", "বাটনের কমলা", "গ্রেডিয়েন্টের শেষ রং"], ["amber-dark", "বাটনের নিচের ছায়া", ""],
-    ["cream", "পেজের ব্যাকগ্রাউন্ড", ""], ["cream-2", "হালকা ব্যাকগ্রাউন্ড ২", "গ্যালারির ব্যাকগ্রাউন্ড"], ["gold", "সোনালি", "বর্ডার ও সাজসজ্জা"],
-    ["brown", "গাঢ় ব্রাউন", "স্ট্রিপ ও গাঢ় অংশ"], ["brown-2", "গাঢ় ব্রাউন ২", "গ্রেডিয়েন্টের শেষ রং"], ["text", "লেখার রং", ""],
-    ["red", "লাল", "নোটিশ ব্যাজ"], ["red-dark", "গাঢ় লাল", "ড্রপ-শ্যাডো"], ["red-2", "উজ্জ্বল লাল", ""]
+    ["green", "প্রধান রং (সবুজ/থিম কালার)", "হেডার, টাইটেল, প্রধান বাটন"], ["green-2", "হালকা শেড (গ্রেডিয়েন্ট)", "হেডারের গ্রেডিয়েন্ট"], ["mint", "অতি হালকা ব্যাকগ্রাউন্ড", "কার্ড ও সিলেকশনের ব্যাকগ্রাউন্ড"],
+    ["amber", "বাটনের প্রধান রং", "অর্ডার বাটন ও হাইলাইট"], ["amber-2", "বাটনের গ্রেডিয়েন্ট রং", "বাটনের গ্রেডিয়েন্টের শেষ রং"], ["amber-dark", "বাটনের নিচের শ্যাডো", "বাটনের ৩ডি ইফেক্ট"],
+    ["cream", "পেজের মূল ব্যাকগ্রাউন্ড", "বডির ব্যাকগ্রাউন্ড"], ["cream-2", "সেকশন ব্যাকগ্রাউন্ড ২", "গ্যালারির ব্যাকগ্রাউন্ড"], ["gold", "সোনালি বর্ডার ও সাজসজ্জা", "কার্ডের বর্ডার ও ডিভাইডার"],
+    ["brown", "গাঢ় স্ট্রিপ ও ফুটার", "স্ট্রিপ, ফুটার ও নোটিশ"], ["brown-2", "গাঢ় স্ট্রিপ ২", "স্ট্রিপের গ্রেডিয়েন্ট"], ["text", "প্রধান লেখার রং", "বডির লেখার রং"],
+    ["red", "লাল ব্যাজ ও নোটিশ", "অফার ও ডিসকাউন্ট ব্যাজ"], ["red-dark", "গাঢ় লাল", "শ্যাডো ও অ্যালার্ট"], ["red-2", "উজ্জ্বল লাল", "সাউন্ড বাটন ও ব্যাজ"]
   ];
-  var PRESETS = [
-    ["🍯 মধু সবুজ (ডিফল্ট)", null],
-    ["💎 রয়্যাল ব্লু", { "green": "#1E3A8A", "green-2": "#2563EB", "mint": "#EEF4FF", "amber": "#FBBF24", "amber-2": "#F59E0B", "amber-dark": "#B45309", "cream": "#F5F8FF", "cream-2": "#E6EEFF", "gold": "#60A5FA", "brown": "#0F172A", "brown-2": "#1E293B", "text": "#0F172A", "red": "#E11D48", "red-dark": "#9F1239", "red-2": "#F43F5E" }],
-    ["🌿 প্রিমিয়াম গ্রিন", { "green": "#064E3B", "green-2": "#059669", "mint": "#ECFDF5", "amber": "#FCD34D", "amber-2": "#F59E0B", "amber-dark": "#B45309", "cream": "#F7FBF8", "cream-2": "#E6F4EA", "gold": "#D4AF37", "brown": "#052E22", "brown-2": "#0B3D2E", "text": "#10281F", "red": "#DC2626", "red-dark": "#991B1B", "red-2": "#EF4444" }],
-    ["🍷 মেরুন", { "green": "#7F1D1D", "green-2": "#B91C1C", "mint": "#FEF2F2", "amber": "#FBBF24", "amber-2": "#F59E0B", "amber-dark": "#B45309", "cream": "#FFF8F1", "cream-2": "#FFEBD6", "gold": "#D97706", "brown": "#2A0E0E", "brown-2": "#431515", "text": "#2A1212", "red": "#DC2626", "red-dark": "#7F1D1D", "red-2": "#EF4444" }],
-    ["🔮 পার্পল", { "green": "#4C1D95", "green-2": "#7C3AED", "mint": "#F5F3FF", "amber": "#FACC15", "amber-2": "#F97316", "amber-dark": "#A16207", "cream": "#FBF8FF", "cream-2": "#EFE7FF", "gold": "#C4B5FD", "brown": "#1E1B4B", "brown-2": "#312E81", "text": "#1E1B4B", "red": "#E11D48", "red-dark": "#9F1239", "red-2": "#F43F5E" }],
-    ["🍊 অরেঞ্জ", { "green": "#9A3412", "green-2": "#EA580C", "mint": "#FFF7ED", "amber": "#FDE047", "amber-2": "#F59E0B", "amber-dark": "#A16207", "cream": "#FFFBEB", "cream-2": "#FEF3C7", "gold": "#FB923C", "brown": "#431407", "brown-2": "#7C2D12", "text": "#2B1A0C", "red": "#DC2626", "red-dark": "#991B1B", "red-2": "#EF4444" }]
+
+  var DEF_THEME = {
+    "green": "#0E5A3E", "green-2": "#17805A", "mint": "#EAF8EF",
+    "amber": "#FFB400", "amber-2": "#FF8A00", "amber-dark": "#B25E00",
+    "cream": "#FFF7E3", "cream-2": "#FFEFC2", "gold": "#E3A62A",
+    "brown": "#2B1A0C", "brown-2": "#3E2713", "text": "#2A1C10",
+    "red": "#E5261F", "red-dark": "#C8140F", "red-2": "#FF3B2F"
+  };
+
+  var THEME_ACHAR = {
+    "green": "#136228", "green-2": "#1B8E3E", "mint": "#F0F8F3",
+    "amber": "#FFB300", "amber-2": "#FF8F00", "amber-dark": "#B26A00",
+    "cream": "#FFFDF7", "cream-2": "#FBF5E8", "gold": "#D4A017",
+    "brown": "#1E291F", "brown-2": "#2C3E2F", "text": "#1F241E",
+    "red": "#DC2626", "red-dark": "#991B1B", "red-2": "#EF4444"
+  };
+
+  var THEME_CUSTOM = {
+    "green": "#8B2500", "green-2": "#B83B08", "mint": "#FFF3ED",
+    "amber": "#FFB800", "amber-2": "#FF7A00", "amber-dark": "#9E4500",
+    "cream": "#FFF9F4", "cream-2": "#FCEEE3", "gold": "#E5A020",
+    "brown": "#2B1408", "brown-2": "#4A220E", "text": "#261309",
+    "red": "#D62828", "red-dark": "#941818", "red-2": "#E83A3A"
+  };
+
+  var THEMES_LIST = [
+    {
+      id: "theme1",
+      name: "🍯 থিম ১: খাঁটি মধু ও বাদাম ল্যান্ডিং পেজ (ডিফল্ট)",
+      badge: "ডিফল্ট ডিজাইন",
+      desc: "অরিজিনাল ভিডিও সেকশন, বেনিফিটস কার্ড, প্রোডাক্ট ক্যারোজেল, ল্যাব রিপোর্ট ও অফার ডিজাইন।",
+      colors: DEF_THEME,
+      preview: "assets/gallery/gallery-1.jpg"
+    },
+    {
+      id: "theme2",
+      name: "🍱 থিম ২: ঐতিহ্যবাহী মিষ্টি ও ফুড কম্বো (ছবি ১)",
+      badge: "ছবি ১ ডিজাইন",
+      desc: "স্পেশাল কম্বো স্প্লিট হিরো, প্রমিস বক্স, ৪-কলাম এক্সক্লুসিভ প্রোডাক্ট গ্রিড, কেন আমরা সেরা ও গিফট ব্যানার।",
+      colors: DEF_THEME,
+      preview: "assets/themes/theme2-preview.jpg"
+    },
+    {
+      id: "theme3",
+      name: "🌶️ থিম ৩: স্পাইসি আচার ও ধামাকা অফার (ছবি ২)",
+      badge: "ছবি ২ ডিজাইন",
+      desc: "ফুল ব্যানার হিরো, ৮টি চেকমার্ক স্পেশালিটি, ফ্রি গরুর মাংসের আচার অফার কার্ড, ৩টি ডিস শোকেস ও প্রাইস স্ট্রাইক বার।",
+      colors: THEME_ACHAR,
+      preview: "assets/themes/theme3-preview.jpg"
+    }
   ];
+
   function viewColors(root) {
+    var curTid = cfg.themeId || "theme1";
     var T = cfg.theme = cfg.theme || {};
-    root.appendChild(h("div", { class: "hint" }, h("b", {}, "🎨 "), "তৈরি থিম বেছে নিন, অথবা নিচের প্রতিটি রং আলাদা করে বদলান। “লাইভ প্রিভিউ” খুললে সাথে সাথে দেখা যাবে।"));
-    var pr = h("div", { class: "preset" });
-    PRESETS.forEach(function (p) {
-      var t = p[1] || DEF.theme || {};
-      var strip = h("div", { class: "sw-strip" }, ["green", "green-2", "amber", "amber-2", "cream", "brown"].map(function (k) { var i = h("i", {}); i.style.background = t[k] || "#ccc"; return i; }));
-      pr.appendChild(h("button", { class: "pbtn", type: "button", onclick: function () { cfg.theme = clone(t); dirty(); render(); toast("থিম বসানো হয়েছে", "ok"); } }, p[0], strip));
+    root.appendChild(h("div", { class: "hint" }, h("b", {}, "🎨 "), "নিচে ৩টি সম্পূর্ণ ভিন্ন স্ট্রাকচারাল থিম দেওয়া আছে। যেকোনো থিমে ক্লিক করলে সাথে সাথে লাইভ প্রিভিউ এবং ওয়েবসাইটে সম্পূর্ণ ডিজাইন, লেআউট ও কালার সাথে সাথে পরিবর্তন হয়ে যাবে!"));
+
+    var tGrid = h("div", { style: "display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin:16px 0 24px" });
+    THEMES_LIST.forEach(function (th) {
+      var isCur = (curTid === th.id);
+      var card = h("div", {
+        style: "border:2px solid " + (isCur ? "#0e6445" : "#e5e7eb") + ";border-radius:12px;padding:16px;background:" + (isCur ? "#f0fbf4" : "#ffffff") + ";box-shadow:" + (isCur ? "0 4px 15px rgba(14,100,69,0.15)" : "0 2px 6px rgba(0,0,0,0.04)") + ";display:flex;flex-direction:column;gap:10px;cursor:pointer;transition:all .2s",
+        onclick: function () {
+          cfg.themeId = th.id;
+          cfg.theme = clone(th.colors);
+          dirty();
+          render();
+          updatePreview();
+          toast("“" + th.name.split(" ")[1] + "” সফলভাবে সক্রিয় করা হয়েছে – লাইভ প্রিভিউ দেখুন", "ok");
+        }
+      });
+
+      var head = h("div", { style: "display:flex;justify-content:space-between;align-items:center" },
+        h("span", { style: "font-weight:700;font-size:1.02rem;color:" + (isCur ? "#0e6445" : "#111827") }, th.name),
+        h("span", { style: "background:" + (isCur ? "#0e6445" : "#f3f4f6") + ";color:" + (isCur ? "#fff" : "#4b5563") + ";font-size:.78rem;font-weight:700;padding:3px 10px;border-radius:20px" }, isCur ? "✓ সক্রিয় থিম" : th.badge)
+      );
+
+      var desc = h("p", { style: "margin:0;font-size:.88rem;color:#4b5563;line-height:1.45;flex-grow:1" }, th.desc);
+
+      var strip = h("div", { class: "sw-strip", style: "margin-top:4px" }, ["green", "green-2", "amber", "amber-2", "cream", "brown"].map(function (k) {
+        var i = h("i", {}); i.style.background = th.colors[k] || "#ccc"; return i;
+      }));
+
+      var actBtn = h("button", {
+        type: "button",
+        class: "btn " + (isCur ? "pri" : "sec"),
+        style: "width:100%;margin-top:6px;font-weight:700"
+      }, isCur ? "✓ বর্তমানে এই থিমটি সক্রিয় আছে" : "এই থিমটিতে সুইচ করুন ➔");
+
+      card.appendChild(head);
+      card.appendChild(desc);
+      card.appendChild(strip);
+      card.appendChild(actBtn);
+      tGrid.appendChild(card);
     });
-    root.appendChild(pr);
-    root.appendChild(h("div", { class: "sub-h", style: "margin-top:20px" }, "প্রতিটি রং আলাদাভাবে"));
+    root.appendChild(tGrid);
+
+    root.appendChild(h("div", { class: "sub-h", style: "margin-top:24px" }, "থিমের প্রতিটি রং আলাদাভাবে কাস্টমাইজ করুন"));
     var box = h("div", { class: "colr" });
     COLORS.forEach(function (c) {
       var inp = h("input", { type: "color" }); inp.value = T[c[0]] || "#000000";
-      inp.oninput = function () { T[c[0]] = inp.value; dirty(); };
+      inp.oninput = function () {
+        T[c[0]] = inp.value;
+        dirty();
+        updatePreview();
+      };
       box.appendChild(h("label", {}, inp, h("span", {}, c[1], c[2] ? h("small", {}, c[2]) : null)));
     });
     root.appendChild(box);
   }
 
   /* ---------- Google Sheet ও API ---------- */
-  function sheetId(v) { v = String(v || "").trim(); var m = v.match(/\/d\/([a-zA-Z0-9_-]+)/); if (m) return m[1]; return /^[a-zA-Z0-9_-]{25,}$/.test(v) ? v : ""; }
+  function sheetId(v) {
+    v = String(v || "").trim();
+    var m = v.match(/\/d\/([a-zA-Z0-9_-]+)/);
+    if (m) return m[1];
+    return /^[a-zA-Z0-9_-]{25,}$/.test(v) ? v : "";
+  }
   function lsGet(k) { try { return localStorage.getItem(k) || ""; } catch (e) { return ""; } }
   function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
-  function genCode() {
-    var id = sheetId(lsGet("hn_admin_sheet"));
+  function genCode(urlOverride) {
+    var raw = (urlOverride != null ? urlOverride : "").trim();
+    if (!raw) {
+      var sEl = document.getElementById("sheetUrlInput");
+      if (sEl && sEl.value) raw = sEl.value.trim();
+    }
+    if (!raw) raw = (cfg.googleSheetUrl || (cfg.sheetDemo && cfg.sheetDemo.url) || lsGet("hn_admin_sheet") || "").trim();
+    var id = sheetId(raw);
     if (!id) return null;
-    var site = String(lsGet("hn_admin_site") || "").trim().replace(/\/+$/, "");
-    return CODE_TPL.replace(/var SPREADSHEET_ID = ".*?";/, 'var SPREADSHEET_ID = "' + id + '";').replace(/var SITE_URL = ".*?";/, 'var SITE_URL = "' + site + '";');
+    var site = String(cfg.siteUrl || lsGet("hn_admin_site") || location.origin || "").trim().replace(/\/+$/, "");
+    if (!/^https?:\/\//i.test(site)) site = "";
+    return CODE_TPL
+      .replace(/var SPREADSHEET_ID = ".*?";/, 'var SPREADSHEET_ID = "' + id + '";')
+      .replace(/var SITE_URL = ".*?";/, 'var SITE_URL = "' + site + '";');
   }
   function viewSheet(root) {
-    if (!lsGet("hn_admin_site") && /^https?:/.test(location.protocol)) lsSet("hn_admin_site", location.origin);
+    if (!lsGet("hn_admin_site") && /^https?:/.test(location.protocol)) {
+      lsSet("hn_admin_site", location.origin);
+      cfg.siteUrl = location.origin;
+    }
     root.appendChild(h("div", { class: "hint" }, h("b", {}, "📊 "), "নিচের ধাপ অনুসরণ করুন: (১) শিটের লিংক দিন → (২) Code.gs কপি করে Apps Script এ পেস্ট করুন → (৩) Deploy করে পাওয়া /exec লিংক নিচের API ঘরে বসান।"));
     var pg = h("div", { class: "pg" });
     var sh = h("div", { class: "fld" }, h("label", {}, "১. আপনার Google Sheet এর লিংক"));
-    var sIn = h("input", { type: "text", placeholder: "https://docs.google.com/spreadsheets/d/…/edit" }); sIn.value = lsGet("hn_admin_sheet");
+    var sIn = h("input", { id: "sheetUrlInput", type: "text", placeholder: "https://docs.google.com/spreadsheets/d/…/edit" });
+    sIn.value = cfg.googleSheetUrl || (cfg.sheetDemo && cfg.sheetDemo.url) || lsGet("hn_admin_sheet") || "";
     var sMsg = h("small", {});
-    function chk() { var id = sheetId(sIn.value); sMsg.textContent = !sIn.value ? "শুধু এই ডিভাইসে সংরক্ষিত থাকে, ওয়েবসাইটে প্রকাশ হয় না" : (id ? "✅ শিট আইডি পাওয়া গেছে: " + id.slice(0, 12) + "…" : "⚠️ সঠিক গুগল শিটের লিংক দিন"); }
-    sIn.oninput = function () { lsSet("hn_admin_sheet", sIn.value.trim()); chk(); };
+    function chk() {
+      var val = sIn.value.trim();
+      var id = sheetId(val);
+      if (!val) {
+        sMsg.className = "";
+        sMsg.textContent = "আপনার গুগল শিটের লিংক দিলে সাথে সাথে Code.gs এ শিট আইডি বসে যাবে ও সেভ হবে।";
+      } else if (id) {
+        sMsg.className = "ok-msg";
+        sMsg.textContent = "✅ শিট আইডি পাওয়া গেছে (" + id.slice(0, 14) + "…) – কোড ও কনফিগে স্বয়ংক্রিয়ভাবে যুক্ত হয়েছে!";
+      } else if (/script\.google\.com\/macros\/s\//i.test(val)) {
+        sMsg.className = "warn-msg";
+        sMsg.textContent = "⚠️ এটি Apps Script /exec API লিংক! এখানে গুগল শিটের লিংক দিন (docs.google.com/spreadsheets/d/.../edit)। API লিংকটি নিচের ৪ নম্বর ঘরে দিন।";
+      } else {
+        sMsg.className = "warn-msg";
+        sMsg.textContent = "⚠️ সঠিক গুগল শিটের লিংক দিন (যেমন: https://docs.google.com/spreadsheets/d/…/edit)";
+      }
+    }
+    function syncSheet(saveDirty) {
+      var val = sIn.value.trim();
+      lsSet("hn_admin_sheet", val);
+      cfg.googleSheetUrl = val;
+      if (cfg.sheetDemo) cfg.sheetDemo.url = val;
+      chk();
+      if (saveDirty !== false) dirty();
+    }
+    sIn.oninput = function () { syncSheet(true); };
+    sIn.onchange = function () { syncSheet(true); };
+    sIn.onpaste = function () { setTimeout(function () { syncSheet(true); }, 15); };
+    sIn.onblur = function () { syncSheet(true); };
     sh.appendChild(sIn); sh.appendChild(sMsg); chk(); pg.appendChild(sh);
 
-    var uIn = h("input", { type: "text", placeholder: "https://আপনার-সাইট.vercel.app" }); uIn.value = lsGet("hn_admin_site");
-    uIn.oninput = function () { lsSet("hn_admin_site", uIn.value.trim()); };
-    pg.appendChild(h("div", { class: "fld" }, h("label", {}, "২. আপনার ওয়েবসাইটের লিংক (Vercel)"), uIn, h("small", {}, "এটি দিলে অর্ডারের দাম সবসময় ওয়েবসাইটের দামের সাথে মিলিয়ে নেওয়া হয়। শুধু এই ডিভাইসে সংরক্ষিত থাকে।")));
+    var uIn = h("input", { type: "text", placeholder: "https://আপনার-সাইট.vercel.app" });
+    uIn.value = cfg.siteUrl || lsGet("hn_admin_site") || "";
+    function syncSite() {
+      var val = uIn.value.trim().replace(/\/+$/, "");
+      lsSet("hn_admin_site", val);
+      cfg.siteUrl = val;
+      dirty();
+    }
+    uIn.oninput = syncSite;
+    uIn.onchange = syncSite;
+    uIn.onblur = syncSite;
+    pg.appendChild(h("div", { class: "fld" }, h("label", {}, "২. আপনার ওয়েবসাইটের লিংক (Vercel)"), uIn, h("small", {}, "এটি দিলে অর্ডারের দাম সবসময় ওয়েবসাইটের দামের সাথে মিলিয়ে নেওয়া হয়।")));
 
     var btns = h("div", { style: "display:flex;gap:8px;flex-wrap:wrap;margin-top:14px" },
-      h("button", { class: "btn pri", type: "button", onclick: function () {
-        var c = genCode(); if (!c) { toast("আগে সঠিক শিটের লিংক দিন", "bad"); return; }
-        var done = function () { toast("✅ Code.gs কপি হয়েছে – Apps Script এ পেস্ট করুন", "ok"); };
+      h("button", { class: "btn pri", type: "button", title: "Apps Script এ পেস্ট করার জন্য Code.gs কপি করুন", onclick: function () {
+        syncSheet(true);
+        var curVal = sIn.value.trim() || cfg.googleSheetUrl || lsGet("hn_admin_sheet");
+        var id = sheetId(curVal);
+        if (!id) {
+          sIn.focus();
+          toast("আগে ১ নম্বরে আপনার Google Sheet এর লিংক দিন", "bad");
+          return;
+        }
+        var c = genCode(curVal);
+        if (!c) { toast("সঠিক গুগল শিট আইডি পাওয়া যায়নি", "bad"); return; }
+        var done = function () { toast("✅ Code.gs সফলভাবে কপি হয়েছে! শিটের Apps Script এ পেস্ট করুন", "ok"); };
         if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(c).then(done, function () { fallbackCopy(c); done(); }); else { fallbackCopy(c); done(); }
       } }, "📋 Code.gs কপি করুন"),
-      h("button", { class: "btn amb", type: "button", onclick: function () { var c = genCode(); if (!c) { toast("আগে সঠিক শিটের লিংক দিন", "bad"); return; } download("Code.gs", c, "text/plain"); } }, "⬇️ Code.gs ডাউনলোড"));
+      h("button", { class: "btn amb", type: "button", title: "Code.gs ফাইল সরাসরি ডাউনলোড করুন", onclick: function () {
+        syncSheet(true);
+        var curVal = sIn.value.trim() || cfg.googleSheetUrl || lsGet("hn_admin_sheet");
+        var id = sheetId(curVal);
+        if (!id) { sIn.focus(); toast("আগে সঠিক শিটের লিংক দিন", "bad"); return; }
+        var c = genCode(curVal);
+        if (!c) { toast("আগে সঠিক শিটের লিংক দিন", "bad"); return; }
+        download("Code.gs", c, "text/plain");
+        toast("Code.gs ডাউনলোড হয়েছে", "ok");
+      } }, "⬇️ Code.gs ডাউনলোড"));
     pg.appendChild(btns);
     pg.appendChild(h("div", { class: "sub-h", style: "margin-top:20px" }, "৩. Apps Script এ কী করবেন"));
     pg.appendChild(h("ol", { class: "steps" },
       h("li", {}, "গুগল শিট খুলুন → ", h("b", {}, "Extensions → Apps Script")),
-      h("li", {}, "আগের সব কোড মুছে কপি করা ", h("b", {}, "Code.gs"), " পেস্ট করুন → Save 💾"),
+      h("li", {}, "আগের সব কোড মুছে কপি করা ", h("b", {}, "Code.gs"), " পেস্ট করুন → Save 💾 (আপনার শিট আইডি কোডের ভেতরে স্বয়ংক্রিয়ভাবে বসে গেছে)"),
       h("li", {}, "উপরের ড্রপডাউন থেকে ", h("code", {}, "setupAll"), " সিলেক্ট করে ▶ Run (Permission দিন) – Orders, User Activity, Pixel Events, Report, Dashboard ট্যাব নিজে তৈরি হবে"),
       h("li", {}, h("b", {}, "Deploy → New deployment → Web app"), " (Execute as: Me, Access: Anyone) → Deploy"),
-      h("li", {}, "পাওয়া ", h("code", {}, "/exec"), " লিংকটি নিচের ঘরে বসান")));
+      h("li", {}, "পাওয়া ", h("code", {}, "/exec"), " লিংকটি নিচের ৪ নম্বর ঘরে বসান এবং উপরে “⬇️ আপডেট ডাউনলোড” দিয়ে প্রজেক্টে বসিয়ে push দিন")));
     root.appendChild(pg);
-    root.appendChild(h("div", { class: "pg mt" }, field("৪. API লিংক (Apps Script /exec)", "apiEndpoint", { ph: "https://script.google.com/macros/s/…/exec", hint: "এটি ওয়েবসাইটে অর্ডার পাঠানোর ঠিকানা। পরে কোড বদলালে Deploy → Manage deployments → New version দিলে লিংক একই থাকে।" })));
+
+    var apiFld = h("div", { class: "fld" }, h("label", {}, "৪. API লিংক (Apps Script /exec)"));
+    var apiIn = h("input", { type: "text", placeholder: "https://script.google.com/macros/s/…/exec" });
+    apiIn.value = cfg.apiEndpoint || "";
+    var apiMsg = h("small", {});
+    function chkApi() {
+      var v = apiIn.value.trim();
+      if (!v) {
+        apiMsg.className = "";
+        apiMsg.textContent = "এটি ওয়েবসাইটে অর্ডার পাঠানোর ঠিকানা। ৩ নম্বর ধাপ অনুযায়ী Deploy করে পাওয়া /exec লিংকটি এখানে দিন।";
+      } else if (/\/macros\/s\/[a-zA-Z0-9_-]+\/exec/i.test(v)) {
+        apiMsg.className = "ok-msg";
+        apiMsg.textContent = "✅ সঠিক Apps Script Web App API লিংক! অর্ডার সরাসরি আপনার গুগল শিটে জমা হবে।";
+      } else if (/docs\.google\.com\/spreadsheets/i.test(v)) {
+        apiMsg.className = "warn-msg";
+        apiMsg.textContent = "⚠️ এটি গুগল শিটের সরাসরি লিংক, API লিংক নয়! ৩ নম্বর ধাপ অনুযায়ী Deploy করে পাওয়া /exec লিংক এখানে দিন।";
+        if (!sIn.value.trim()) { sIn.value = v; syncSheet(true); }
+      } else if (/script\.google\.com/i.test(v) && !/\/exec/i.test(v)) {
+        apiMsg.className = "warn-msg";
+        apiMsg.textContent = "⚠️ লিংকটির শেষে /exec থাকতে হবে (যেমন: .../exec)। Web App হিসেবে Deploy করেছেন কিনা নিশ্চিত করুন।";
+      } else {
+        apiMsg.className = "";
+        apiMsg.textContent = "ওয়েবসাইট থেকে এই ঠিকানায় অর্ডার ডাটা যাবে।";
+      }
+    }
+    apiIn.oninput = function () { cfg.apiEndpoint = apiIn.value.trim(); chkApi(); dirty(); };
+    apiIn.onchange = function () { cfg.apiEndpoint = apiIn.value.trim(); chkApi(); dirty(); };
+    apiFld.appendChild(apiIn);
+    apiFld.appendChild(apiMsg);
+    chkApi();
+    root.appendChild(h("div", { class: "pg mt" }, apiFld));
   }
   function fallbackCopy(t) { var ta = h("textarea", {}); ta.value = t; ta.style.position = "fixed"; ta.style.opacity = "0"; document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); } catch (e) {} ta.remove(); }
 
@@ -908,6 +1102,10 @@ code{background:#f4ecd8;padding:1px 6px;border-radius:6px;font-size:.85em}
   function fixCfg() {
     cfg.contact = cfg.contact || {}; cfg.sections = cfg.sections || {}; cfg.copy = cfg.copy || {}; cfg.theme = cfg.theme || {};
     cfg.custom = cfg.custom || []; cfg.tracking = cfg.tracking || { fbPixelId: "", activity: true, sample: 100 };
+    if (!cfg.googleSheetUrl) {
+      cfg.googleSheetUrl = (cfg.sheetDemo && cfg.sheetDemo.url) || lsGet("hn_admin_sheet") || "";
+    }
+    if (cfg.googleSheetUrl && !lsGet("hn_admin_sheet")) lsSet("hn_admin_sheet", cfg.googleSheetUrl);
     cfg.products.forEach(function (p) { if (p.active === undefined) p.active = true; if (p.oldPrice == null || p.oldPrice === 0) p.oldPrice = p.oldPrice || ""; if (p.badge == null) p.badge = ""; });
     cfg.custom.forEach(function (c) { c.images = c.images || []; c.cards = c.cards || []; });
     normOrder();

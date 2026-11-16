@@ -496,6 +496,99 @@
     calc();
   }
 
+  /* ---------- Theme 2 & Theme 3 রেন্ডারার ---------- */
+  function renderTheme2() {
+    var t2Grid = $("#t2ProductGrid");
+    if (t2Grid) {
+      var list = prods();
+      t2Grid.innerHTML = "";
+      list.forEach(function (p) {
+        var card = document.createElement("div");
+        card.className = "t2-card";
+        var thumb = (C.images.products || {})[p.thumb] || p.thumb;
+        var oldHtml = p.oldPrice ? '<del class="t2-card-old">' + money(p.oldPrice) + '</del>' : '';
+        card.innerHTML =
+          '<div class="t2-card-thumb"></div>' +
+          '<h3 class="t2-card-title">' + esc(p.name) + '</h3>' +
+          '<div class="t2-card-price-bar">' + oldHtml + '<span class="t2-card-price">' + money(p.price) + '</span></div>' +
+          '<button type="button" class="t2-card-btn" data-t2-order="' + esc(p.id) + '">🛒 অর্ডার করুন</button>';
+        var thEl = $(".t2-card-thumb", card);
+        thEl.appendChild(img(thumb, "ছবি", 300, 300, p.name));
+        t2Grid.appendChild(card);
+      });
+    }
+
+    var t2RevBox = $("#t2ReviewsGrid");
+    if (t2RevBox) {
+      var revs = (C.images && C.images.reviews) || [];
+      t2RevBox.innerHTML = "";
+      var showRevs = revs.slice(0, 3);
+      if (showRevs.length === 0) showRevs = ["assets/reviews/review-1.svg", "assets/reviews/review-2.svg", "assets/reviews/review-3.svg"];
+      showRevs.forEach(function (rItem, idx) {
+        var it = document.createElement("div");
+        it.className = "t2-rev-item";
+        it.appendChild(img(rItem, "রিভিউ " + bn(idx + 1), 450, 600));
+        t2RevBox.appendChild(it);
+      });
+    }
+
+    var cp = C.copy || {};
+    var list2 = prods(), fp2 = list2[0] ? list2[0].price : 999;
+    txt("#t2HeroPrice", money(cp.offerNew || fp2));
+    var oldEl2 = $("#t2HeroOldPrice");
+    if (oldEl2) {
+      if (cp.offerOld) { oldEl2.style.display = ""; oldEl2.textContent = money(cp.offerOld); }
+      else oldEl2.style.display = "none";
+    }
+    if (C.contact && C.contact.phone) txt("#t2ContactPhone", C.contact.phone);
+  }
+
+  function renderTheme3() {
+    var t3RevBox = $("#t3ReviewsGrid");
+    if (t3RevBox) {
+      var revs = (C.images && C.images.reviews) || [];
+      t3RevBox.innerHTML = "";
+      var showRevs = revs.slice(0, 5);
+      if (showRevs.length === 0) showRevs = ["assets/reviews/review-1.svg", "assets/reviews/review-2.svg", "assets/reviews/review-3.svg", "assets/reviews/review-4.svg", "assets/reviews/review-5.svg"];
+      showRevs.forEach(function (rItem, idx) {
+        var it = document.createElement("div");
+        it.className = "t3-rev-card";
+        it.appendChild(img(rItem, "রিভিউ " + bn(idx + 1), 450, 600));
+        t3RevBox.appendChild(it);
+      });
+    }
+
+    var cp = C.copy || {};
+    var list3 = prods(), fp3 = list3[0] ? list3[0].price : 999;
+    txt("#t3PsNew", "অফার মূল্য " + money(cp.offerNew || fp3));
+    var psOldEl = $("#t3PsOld");
+    if (psOldEl) {
+      if (cp.offerOld) { psOldEl.style.display = ""; psOldEl.textContent = "রেগুলার মূল্য " + money(cp.offerOld); }
+      else psOldEl.style.display = "none";
+    }
+
+    var phone = (C.contact && C.contact.phone) || "01805986170";
+    txt("#t3PhoneText", phone);
+    txt("#t3MidPhoneText", phone);
+    var pLink1 = $("#t3HeroPhone"), pLink2 = $("#t3MidPhone");
+    if (pLink1) pLink1.href = "tel:" + phone.replace(/[^\d+]/g, "");
+    if (pLink2) pLink2.href = "tel:" + phone.replace(/[^\d+]/g, "");
+  }
+
+  document.addEventListener("click", function (e) {
+    var t2Btn = e.target.closest && e.target.closest("[data-t2-order]");
+    if (t2Btn) {
+      var pid = t2Btn.getAttribute("data-t2-order");
+      if (pid) {
+        state.touched = true;
+        state.items[pid] = (state.items[pid] || 0) + 1;
+        calc();
+      }
+      var chk = $("#checkout");
+      if (chk) chk.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+    }
+  });
+
   // বামপাশের প্রোডাক্ট কার্ডে ক্লিক বা পরিমাণ পরিবর্তনের হ্যান্ডলার
   pkgBox.addEventListener("click", function (e) {
     var minusBtn = e.target.closest(".minus");
@@ -1298,6 +1391,8 @@
 
   /* ---------- সবকিছু একসাথে রেন্ডার ---------- */
   function applyTheme() {
+    var tid = C.themeId || "theme1";
+    document.body.setAttribute("data-theme", tid);
     var t = C.theme || {}, st = document.documentElement.style;
     Object.keys(t).forEach(function (k) { if (/^#[0-9a-fA-F]{3,8}$/.test(t[k])) st.setProperty("--" + k, t[k]); });
   }
@@ -1313,20 +1408,27 @@
     renderPhotos();
     renderProducts();
     renderShipping();
+    renderTheme2();
+    renderTheme3();
     renderCopy();            // দাম পরিবর্তনের পর অফার প্রাইস আবার ঠিক করা
     renderSticky();
     renderFloaters();
     calc();
   }
 
-  /* ---------- Admin Panel লাইভ প্রিভিউ (শুধু index.html?preview=1 এ) ---------- */
+  /* ---------- Admin Panel লাইভ প্রিভিউ (index.html?preview=1 অথবা iframe postMessage) ---------- */
   var DK = "hn_admin_draft";
   var over = null;
+  var rd = function (raw) { try { var j = typeof raw === "string" ? JSON.parse(raw || "null") : raw; return j && j.data ? j.data : (j || null); } catch (e) { return null; } };
   if (/[?&]preview=1/.test(location.search)) {
-    var rd = function (raw) { try { var j = JSON.parse(raw || "null"); return j && j.data ? j.data : null; } catch (e) { return null; } };
     try { over = rd(localStorage.getItem(DK)); } catch (e) {}
     window.addEventListener("storage", function (e) { if (e.key === DK && e.newValue) render(rd(e.newValue)); });
   }
+  window.addEventListener("message", function (e) {
+    if (e.data && e.data.type === "hn_preview_update" && e.data.data) {
+      render(e.data.data);
+    }
+  });
   render(over);
   (function () {
     var l = prods(), p = l.filter(function (x) { return x.id === C.defaultProduct; })[0] || l[0];

@@ -1,182 +1,586 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="bn">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>খাঁটি মধু ও প্রিমিয়াম হানি নাট – অর্ডার করুন</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
-<meta name="theme-color" content="#0E5A3E">
-<link rel="stylesheet" href="css/style.min.css">
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>খাঁটি মধু ও প্রিমিয়াম হানি নাট – অর্ডার করুন</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <meta name="theme-color" content="#0E5A3E" id="metaThemeColor" />
+    <link rel="stylesheet" href="css/style.min.css" />
+    <link rel="stylesheet" href="css/themes.css" />
+  </head>
+  <body data-theme="theme1">
+    <!-- 1. Top heading -->
+    <header class="s-top theme1-only" data-sec="top">
+      <h1 id="topHeading"></h1>
+    </header>
 
-<!-- 1. Top heading -->
-<header class="s-top" data-sec="top">
-  <h1 id="topHeading"></h1>
-</header>
+    <!-- 2. Video -->
+    <section class="s-video theme1-only" data-sec="video">
+      <div class="video-box" id="videoBox"></div>
+    </section>
 
-<!-- 2. Video -->
-<section class="s-video" data-sec="video">
-  <div class="video-box" id="videoBox"></div>
-</section>
-
-<!-- 3. Red notice -->
-<div class="s-notice" data-sec="notice"><span class="notice" id="noticeText"></span></div>
-
-<!-- 4. Primary order button -->
-<div class="s-cta" data-sec="cta1"><button type="button" class="btn-order" data-scroll-order data-cta>👍 এখনই অর্ডার করুন</button></div>
-
-<!-- 5. Benefits card -->
-<section class="s-benefits" data-sec="benefits">
-  <div class="benefit-card">
-    <h2 class="bar" id="benefitsTitle"></h2>
-    <p class="sec-sub" id="benefitsSub"></p>
-    <ul class="checks" id="benefitsList"></ul>
-    <div class="s-cta in-card"><button type="button" class="btn-order" data-scroll-order data-cta>👍 এখনই অর্ডার করুন</button></div>
-  </div>
-</section>
-
-<!-- 6. Dark strip -->
-<div class="s-strip" id="strip1" data-sec="strip1"></div>
-
-<!-- 7. Product / store carousel -->
-<section class="s-gallery" data-sec="gallery">
-  <h2 class="bar wide" id="galleryTitle"></h2>
-  <p class="sec-sub" id="gallerySub"></p>
-  <div class="carousel" data-carousel="gallery"></div>
-  <div class="s-cta"><button type="button" class="btn-order" data-scroll-order data-cta>👍 এখনই অর্ডার করুন</button></div>
-</section>
-
-<!-- 8. Reviews -->
-<section class="s-reviews" data-sec="reviews">
-  <h2 class="bar wide" id="reviewsTitle"></h2>
-  <p class="sec-sub" id="reviewsSub"></p>
-  <div class="carousel" data-carousel="reviews"></div>
-  <div class="s-cta"><button type="button" class="btn-order" data-scroll-order data-cta>👍 এখনই অর্ডার করুন</button></div>
-</section>
-
-<!-- 9. Documents -->
-<section class="s-docs" data-sec="docs">
-  <h2 class="bar green-strip" id="docsTitle"></h2>
-  <p class="sec-sub" id="docsSub"></p>
-  <div class="carousel dark" data-carousel="documents"></div>
-</section>
-
-<!-- 10. Offer banner -->
-<section class="s-offer" data-sec="offer">
-  <p class="offer-line" id="offerLine"></p>
-  <p class="offer-price"><del id="offerOld"></del> <strong id="offerNew"></strong></p>
-  <p class="offer-note" id="offerNote"></p>
-  <button type="button" class="btn-order" data-scroll-order data-cta>👍 এখনই অর্ডার করুন</button>
-</section>
-
-<!-- 11. Dark strip 2 -->
-<div class="s-strip" id="strip2" data-sec="strip2"></div>
-
-<!-- 12. Checkout -->
-<section class="s-checkout" id="checkout" data-sec="checkout">
-  <div class="checkout-wrap">
-    <h2 class="bar wide" id="checkoutTitle"></h2>
-
-    <!-- লাইভ গুগল শিট ডেমো বক্স -->
-    <div class="sheet-demo-card" id="sheetDemoCard">
-      <div class="sdc-content">
-        <div class="sdc-badge"><span class="sdc-live-dot"></span> লাইভ ডেমো প্রিভিউ</div>
-        <h3 class="sdc-title" id="sdcTitle">📊 আপনার ডাটা কীভাবে সেভ হবে তা দেখে নিন</h3>
-        <p class="sdc-desc" id="sdcDesc">অর্ডার সাবমিট করার সাথে সাথে কাস্টমারের নাম, মোবাইল, ঠিকানা ও অর্ডার তথ্য কীভাবে প্রফেশনাল গুগল শিটে স্বয়ংক্রিয়ভাবে জমা হয় তা সরাসরি দেখুন।</p>
-      </div>
-      <a href="#" target="_blank" rel="noopener noreferrer" class="sdc-btn" id="sheetDemoBtn">
-        <span class="sdc-icon">📑</span>
-        <span id="sdcBtnText">আপনার ডাটা যেভাবে সেভ হবে তা লাইভ দেখে নিন ➔</span>
-      </a>
+    <!-- 3. Red notice -->
+    <div class="s-notice theme1-only" data-sec="notice">
+      <span class="notice" id="noticeText"></span>
     </div>
 
-    <form id="orderForm" novalidate>
-      <div class="co-grid">
-        <div class="co-left">
-          <h3 class="sub">পছন্দের পণ্য বেছে নিন (এক বা একাধিক সিলেক্ট করতে পারেন)</h3>
-          <div class="packages" id="packages" aria-label="পণ্য তালিকা"></div>
+    <!-- 4. Primary order button -->
+    <div class="s-cta theme1-only" data-sec="cta1">
+      <button type="button" class="btn-order" data-scroll-order data-cta>
+        👍 এখনই অর্ডার করুন
+      </button>
+    </div>
 
-          <h3 class="sub">বিলিং তথ্য</h3>
-          <div class="field"><label for="name">আপনার নাম <i>*</i></label>
-            <input id="name" name="name" type="text" autocomplete="name" placeholder="আপনার পূর্ণ নাম">
-            <small class="err" data-err="name"></small></div>
-          <div class="field"><label for="phone">মোবাইল নাম্বার <i>*</i></label>
-            <input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="01XXXXXXXXX">
-            <small class="err" data-err="phone"></small></div>
-          <div class="field district-field"><label for="district">জেলা / এলাকা <i>*</i></label>
-            <div class="dist-picker-wrap" id="distPickerWrap">
-              <div class="dist-trigger-box" id="distTriggerBox" role="button" tabindex="0" aria-haspopup="listbox" aria-expanded="false">
-                <span class="dist-pin-icon">📍</span>
-                <input id="district" name="district" type="text" autocomplete="off" readonly placeholder="জেলা নির্বাচন করুন (Select District)">
-                <button type="button" class="dist-btn-search" id="distOpenBtn" aria-label="জেলা খুঁজুন বা নির্বাচন করুন">
-                  <span class="dbs-icon">🔍</span>
-                  <span class="dbs-text">খুঁজুন</span>
-                  <span class="dbs-arrow">▼</span>
-                </button>
-              </div>
+    <!-- 5. Benefits card -->
+    <section class="s-benefits theme1-only" data-sec="benefits">
+      <div class="benefit-card">
+        <h2 class="bar" id="benefitsTitle"></h2>
+        <p class="sec-sub" id="benefitsSub"></p>
+        <ul class="checks" id="benefitsList"></ul>
+        <div class="s-cta in-card">
+          <button type="button" class="btn-order" data-scroll-order data-cta>
+            👍 এখনই অর্ডার করুন
+          </button>
+        </div>
+      </div>
+    </section>
 
-              <!-- ড্রপডাউন সার্চ ও জেলা নির্বাচন পপআপ -->
-              <div class="dist-dropdown-box" id="distDropdown">
-                <div class="dist-search-bar">
-                  <span class="dist-search-icon">🔍</span>
-                  <input type="text" id="distSearchInput" placeholder="জেলার নাম লিখুন (যেমন: ঢাকা বা Dhaka)..." autocomplete="off">
-                  <button type="button" class="dist-clear-btn" id="distClearBtn" aria-label="মুছে ফেলুন" title="মুছে ফেলুন" style="display:none">✕</button>
-                  <button type="button" class="dist-submit-search-btn" id="distDoSearchBtn">খুঁজুন</button>
-                </div>
+    <!-- 6. Dark strip -->
+    <div class="s-strip theme1-only" id="strip1" data-sec="strip1"></div>
 
-                <div class="dist-status-bar">
-                  <span id="distCountText">মোট ৬৪টি জেলা</span>
-                  <span class="dist-hint">ক্লিক করে নির্বাচন করুন</span>
-                </div>
+    <!-- 7. Product / store carousel -->
+    <section class="s-gallery theme1-only" data-sec="gallery">
+      <h2 class="bar wide" id="galleryTitle"></h2>
+      <p class="sec-sub" id="gallerySub"></p>
+      <div class="carousel" data-carousel="gallery"></div>
+      <div class="s-cta">
+        <button type="button" class="btn-order" data-scroll-order data-cta>
+          👍 এখনই অর্ডার করুন
+        </button>
+      </div>
+    </section>
 
-                <div class="dist-options-list" id="distOptionsList" role="listbox"></div>
+    <!-- 8. Reviews -->
+    <section class="s-reviews theme1-only" data-sec="reviews">
+      <h2 class="bar wide" id="reviewsTitle"></h2>
+      <p class="sec-sub" id="reviewsSub"></p>
+      <div class="carousel" data-carousel="reviews"></div>
+      <div class="s-cta">
+        <button type="button" class="btn-order" data-scroll-order data-cta>
+          👍 এখনই অর্ডার করুন
+        </button>
+      </div>
+    </section>
 
-                <div class="dist-custom-option" id="distCustomOption" style="display:none">
-                  <button type="button" id="distUseCustomBtn">
-                    <span>✍️ আপনার এলাকা হিসেবে ব্যবহার করুন: </span><strong id="distCustomVal"></strong>
-                  </button>
-                </div>
+    <!-- 9. Documents -->
+    <section class="s-docs theme1-only" data-sec="docs">
+      <h2 class="bar green-strip" id="docsTitle"></h2>
+      <p class="sec-sub" id="docsSub"></p>
+      <div class="carousel dark" data-carousel="documents"></div>
+    </section>
+
+    <!-- 10. Offer banner -->
+    <section class="s-offer theme1-only" data-sec="offer">
+      <p class="offer-line" id="offerLine"></p>
+      <p class="offer-price">
+        <del id="offerOld"></del> <strong id="offerNew"></strong>
+      </p>
+      <p class="offer-note" id="offerNote"></p>
+      <button type="button" class="btn-order" data-scroll-order data-cta>
+        👍 এখনই অর্ডার করুন
+      </button>
+    </section>
+
+    <!-- 11. Dark strip 2 -->
+    <div class="s-strip theme1-only" id="strip2" data-sec="strip2"></div>
+
+    <!-- ================= THEME 2 (IMAGE 1): FOOD & SWEETS COMBO ================= -->
+    <div class="theme2-only" id="theme2Wrap">
+      <!-- Theme 2 Top Announcement -->
+      <div class="t2-topbar">
+        <span id="t2TopText">ঐতিহ্যের সেই চিরচেনা স্বাদ এখন একসাথে এক বক্সে</span>
+      </div>
+
+      <!-- Theme 2 Hero -->
+      <section class="t2-hero">
+        <div class="t2-hero-wrap">
+          <div class="t2-hero-left">
+            <span class="t2-badge" id="t2HeroBadge">আমাদের স্পেশাল কম্বো</span>
+            <h1 class="t2-hero-title" id="t2HeroTitle">ঐতিহ্যের সেই চিরচেনা স্বাদ এখন একসাথে এক বক্সে</h1>
+            <div class="t2-hero-sub-pill" id="t2HeroSub">খাঁটি স্বাদের ঐতিহ্যবাহী খাবারের সমাহার</div>
+            <p class="t2-hero-desc" id="t2HeroDesc">শতভাগ স্বাস্থ্যসম্মত উপায়ে ঘরে তৈরি খাবার যা আপনার পরিবারের পুষ্টি ও স্বাস্থ্য নিশ্চিত করবে।</p>
+            <div class="t2-price-box">
+              <span class="t2-price-label">মূল্য:</span>
+              <span class="t2-price-val" id="t2HeroPrice">৯৯৯ ৳</span>
+              <del class="t2-price-old" id="t2HeroOldPrice">১৪৫০ ৳</del>
+            </div>
+            <button type="button" class="btn-order t2-btn-order" data-scroll-order>
+              🛒 আমি অর্ডার করতে চাই
+            </button>
+          </div>
+          <div class="t2-hero-right">
+            <div class="t2-hero-img-wrap">
+              <img id="t2HeroImg" src="assets/themes/theme2-preview.jpg" alt="ঐতিহ্যবাহী কম্বো বক্স" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Theme 2 Assurance -->
+      <section class="t2-assurance">
+        <div class="t2-section-head">
+          <span class="t2-pill-badge">কেন এটি প্রয়োজন?</span>
+          <h2 id="t2AssureTitle">আপনি কি কখনও অনলাইন খাবার খেয়ে ধোকা খেয়েছেন, কিন্তু ঘরে খাওয়ার পর হতাশ হয়েছেন?</h2>
+          <p class="t2-sub" id="t2AssureSub">আমরা জানি ভেজাল খাবারের ঝুঁকি। তাই আমাদের প্রতিশ্রুতি খাঁটি স্বাদের নিশ্চয়তা।</p>
+        </div>
+        <div class="t2-assure-grid">
+          <div class="t2-assure-left">
+            <ul class="t2-check-list" id="t2AssureList">
+              <li><span class="t2-chk-ic">✓</span> <span class="t2-chk-txt">শতভাগ স্বাস্থ্যসম্মত উপায়ে প্রস্তুত</span></li>
+              <li><span class="t2-chk-ic">✓</span> <span class="t2-chk-txt">কোনো প্রকার ক্ষতিকর প্রিজারভেটিভ নেই</span></li>
+              <li><span class="t2-chk-ic">✓</span> <span class="t2-chk-txt">প্রিমিয়াম কোয়ালিটির উপাদান ও নিশ্চয়তা</span></li>
+              <li><span class="t2-chk-ic">✓</span> <span class="t2-chk-txt">হোমমেড খাবারের খাঁটি ও অতুলনীয় স্বাদ</span></li>
+            </ul>
+          </div>
+          <div class="t2-assure-right">
+            <div class="t2-promise-card">
+              <div class="t2-promise-icon">✓</div>
+              <h3 id="t2PromiseTitle">প্রথম ব্যবহারেই অনুভব করবেন এই খাঁটি স্বাদ</h3>
+              <p id="t2PromiseDesc">আমাদের খাবারের প্রতিটি কামড়ে রয়েছে গ্রাম-বাংলার ঐতিহ্যবাহী খাঁটি স্বাদ ও ভালোবাসা। একবার খেলে বারবার খেতে চাইবেন ইনশাআল্লাহ।</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Theme 2 Exclusive Products Grid -->
+      <section class="t2-products">
+        <div class="t2-section-head">
+          <span class="t2-pill-badge">আমাদের পণ্যসমূহ</span>
+          <h2 id="t2ProductsTitle">আমাদের এক্সক্লুসিভ কালেকশন</h2>
+          <p class="t2-sub" id="t2ProductsSub">প্রতিটি খাবার তৈরি করা হয়েছে অত্যন্ত যত্ন ও বিশুদ্ধতার সাথে</p>
+        </div>
+        <div class="t2-grid" id="t2ProductGrid"></div>
+        <div class="t2-center-cta">
+          <button type="button" class="btn-order t2-btn-order" data-scroll-order>
+            🛒 আমি অর্ডার করতে চাই
+          </button>
+        </div>
+      </section>
+
+      <!-- Theme 2 Reviews -->
+      <section class="t2-reviews">
+        <div class="t2-section-head">
+          <span class="t2-pill-badge">রিভিউ</span>
+          <h2>কাস্টমার রিভিউ</h2>
+          <p class="t2-sub">আমাদের খাবারের স্বাদ কেমন লেগেছে তা জেনে নিন সম্মানিত কাস্টমারদের কাছ থেকেই</p>
+        </div>
+        <div class="t2-review-cards" id="t2ReviewsGrid"></div>
+      </section>
+
+      <!-- Theme 2 Why Best -->
+      <section class="t2-why-best">
+        <div class="t2-section-head">
+          <span class="t2-pill-badge">আমাদের বিশেষত্ব</span>
+          <h2>কেন আমরা সেরা?</h2>
+          <p class="t2-sub">আমরা শুধু খাবার বিক্রি করি না, তৈরি করি একটি সুস্থ ও আনন্দময় পরিবারের গল্প</p>
+        </div>
+        <div class="t2-why-grid">
+          <div class="t2-why-left">
+            <div class="t2-circle-img-wrap">
+              <img id="t2WhyImg" src="assets/gallery/gallery-1.jpg" alt="আমাদের বিশেষ পণ্য" />
+              <span class="t2-circle-tag">১০০% প্রাকৃতিক</span>
+            </div>
+          </div>
+          <div class="t2-why-right">
+            <div class="t2-feature-card">
+              <span class="t2-fc-num">১</span>
+              <div class="t2-fc-body">
+                <h4>১০০% খাঁটি উপাদান</h4>
+                <p>কোনো কৃত্রিম ফ্লেভার বা কেমিক্যাল ছাড়া সরাসরি প্রাকৃতিক উপাদান দিয়ে তৈরি।</p>
               </div>
             </div>
-            <small class="err" data-err="district"></small></div>
-          <div class="field"><label for="address">সম্পূর্ণ ঠিকানা <i>*</i></label>
-            <textarea id="address" name="address" rows="2" autocomplete="street-address" placeholder="বাসা/রোড/থানা"></textarea>
-            <small class="err" data-err="address"></small></div>
-          <div class="field"><label for="note">অর্ডার নোট (ঐচ্ছিক)</label>
-            <textarea id="note" name="note" rows="2" placeholder="কোনো বিশেষ নির্দেশনা থাকলে লিখুন"></textarea></div>
+            <div class="t2-feature-card">
+              <span class="t2-fc-num">২</span>
+              <div class="t2-fc-body">
+                <h4>দ্রুত ডেলিভারি সুবিধা</h4>
+                <p>সারা দেশে ক্যাশ অন ডেলিভারি – পণ্য হাতে পেয়ে চেক করে টাকা পরিশোধ করুন।</p>
+              </div>
+            </div>
+            <div class="t2-feature-card">
+              <span class="t2-fc-num">৩</span>
+              <div class="t2-fc-body">
+                <h4>স্বাস্থ্যসম্মত প্যাকেজিং</h4>
+                <p>ফুড গ্রেড এয়ার-টাইট জারে প্যাকেজড, যাতে স্বাদ ও ঘ্রাণ থাকে একদম অটুট।</p>
+              </div>
+            </div>
+            <div class="t2-feature-card">
+              <span class="t2-fc-num">৪</span>
+              <div class="t2-fc-body">
+                <h4>মানসম্মত নিশ্চয়তা</h4>
+                <p>পণ্য পছন্দ না হলে তাৎক্ষণিক রিটার্ন পলিসির সহজ সুবিধা।</p>
+              </div>
+            </div>
+            <button type="button" class="btn-order t2-btn-order" data-scroll-order>
+              🛒 আমি অর্ডার করতে চাই
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Theme 2 Gift Banner -->
+      <section class="t2-gift-banner">
+        <div class="t2-gift-content">
+          <div class="t2-gift-icon">🎁</div>
+          <h2>প্রিয়জনকে উপহার পাঠাতে চান?</h2>
+          <p>যেকোনো বিশেষ উপলক্ষ বা উৎসবে ভালোবাসার মানুষকে দিন সেরা উপহার। সারা দেশে যে কোনো ঠিকানায় আমরা পৌঁছে দেব।</p>
+          <button type="button" class="btn-order t2-btn-order" data-scroll-order>
+            🛒 আমি অর্ডার করতে চাই
+          </button>
+          <div class="t2-gift-note">যেকোনো তথ্যের জন্য কল করুনঃ <span id="t2ContactPhone">০১XXXXXXXXX</span></div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ================= THEME 3 (IMAGE 2): SPICY PICKLE / ACHAR MEGA OFFER ================= -->
+    <div class="theme3-only" id="theme3Wrap">
+      <!-- Theme 3 Top Notice -->
+      <div class="t3-topbar">
+        <span id="t3TopText">খাটি পদ্মার ইলিশের আচার খেয়েছেন কখনো?</span>
+      </div>
+
+      <!-- Theme 3 Hero Poster Banner -->
+      <section class="t3-hero">
+        <div class="t3-hero-wrap">
+          <div class="t3-poster-box">
+            <img id="t3PosterImg" src="assets/themes/theme3-preview.jpg" alt="স্পেশাল অফার ব্যানার" />
+          </div>
+          <div class="t3-hero-cta">
+            <button type="button" class="btn-order t3-btn-order" data-scroll-order>
+              👉 এখনই অর্ডার করুন 👈
+            </button>
+            <a href="tel:01805986170" class="t3-hotline-pill" id="t3HeroPhone">
+              📞 <span id="t3PhoneText">01805986170</span>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Theme 3 Why Combo -->
+      <section class="t3-why-combo">
+        <div class="t3-section-title">
+          <h2>❤️ কেন এই কম্বোটি নিবেন ❤️</h2>
+        </div>
+        <div class="t3-checks-grid" id="t3ChecksGrid">
+          <div class="t3-check-item"><span class="t3-c-icon">✓</span><span>খাঁটি সরিষার তেলে তৈরি</span></div>
+          <div class="t3-check-item"><span class="t3-c-icon">✓</span><span>কোনো প্রকার রাসায়নিক রঙ বা প্রিজারভেটিভ নেই</span></div>
+          <div class="t3-check-item"><span class="t3-c-icon">✓</span><span>১০০% প্রিমিয়াম ও ফ্রেশ ইলিশ মাছ</span></div>
+          <div class="t3-check-item"><span class="t3-c-icon">✓</span><span>ঘরোয়া স্পেশাল মসলায় তৈরি</span></div>
+          <div class="t3-check-item"><span class="t3-c-icon">✓</span><span>প্রিমিয়াম কাঁচের বয়ামে প্যাকেজিং</span></div>
+          <div class="t3-check-item"><span class="t3-c-icon">✓</span><span>মুখে লেগে থাকার মতো অসাধারণ খাঁটি স্বাদ</span></div>
+          <div class="t3-check-item"><span class="t3-c-icon">✓</span><span>শতভাগ স্বাস্থ্যসম্মত পরিবেশে প্রস্তুত</span></div>
+          <div class="t3-check-item"><span class="t3-c-icon">✓</span><span>ভাত, পোলাও বা খিচুড়ির সাথে দারুণ মানানসই</span></div>
+        </div>
+        <div class="t3-promo-gift-card">
+          <div class="t3-gift-badge">🎁 স্পেশাল ধামাকা অফার!</div>
+          <div class="t3-gift-title">গরুর মাংসের আচার একদম ফ্রি!</div>
+          <p class="t3-gift-desc">৩টি আচারের সাথে ১টি গরুর মাংসের আচার একদম ফ্রি পাচ্ছেন সীমিত সময়ের জন্য।</p>
+          <button type="button" class="btn-order t3-btn-order" data-scroll-order>
+            👉 এখনই অর্ডার করুন 👈
+          </button>
+        </div>
+      </section>
+
+      <!-- Theme 3 Limited Offer Showcase Dishes -->
+      <section class="t3-offer-dishes">
+        <div class="t3-dishes-badge">
+          <span>🏆 অফারটি সীমিত সময়ের জন্য 🏆</span>
+        </div>
+        <div class="t3-dishes-grid" id="t3DishesGrid">
+          <div class="t3-dish-card">
+            <div class="t3-dish-img"><img src="assets/gallery/gallery-1.jpg" alt="ইলিশের আচার" /></div>
+            <div class="t3-dish-name">পদ্মার ইলিশের আচার</div>
+          </div>
+          <div class="t3-dish-card">
+            <div class="t3-dish-img"><img src="assets/gallery/gallery-2.jpg" alt="চেরা শুঁটকির আচার" /></div>
+            <div class="t3-dish-name">চেরা শুঁটকির আচার</div>
+          </div>
+          <div class="t3-dish-card">
+            <div class="t3-dish-img"><img src="assets/gallery/gallery-3.jpg" alt="গরুর মাংসের আচার" /></div>
+            <div class="t3-dish-name">গরুর মাংসের আচার</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Theme 3 Reviews -->
+      <section class="t3-reviews">
+        <div class="t3-section-title">
+          <h2>⭐ ১০,০০০+ সন্তুষ্ট গ্রাহকের ভালোবাসা ⭐</h2>
+        </div>
+        <div class="t3-reviews-grid" id="t3ReviewsGrid"></div>
+      </section>
+
+      <!-- Theme 3 Hotline Banner -->
+      <section class="t3-hotline-bar">
+        <h3>প্রয়োজনে কল করুন</h3>
+        <a href="tel:01805986170" class="t3-hotline-btn" id="t3MidPhone">
+          📞 <span id="t3MidPhoneText">01805986170</span>
+        </a>
+      </section>
+
+      <!-- Theme 3 Price Strike Bar -->
+      <section class="t3-price-strike">
+        <div class="t3-ps-old" id="t3PsOld">রেগুলার মূল্য ১৪৫০ টাকা</div>
+        <div class="t3-ps-new" id="t3PsNew">অফার মূল্য ৯৯৯ টাকা</div>
+        <div class="t3-ps-pill" id="t3PsPill">৪৫১ টাকা মূল্য ছাড় + ফ্রি ডেলিভারি</div>
+      </section>
+    </div>
+
+    <!-- 12. Checkout -->
+    <section class="s-checkout" id="checkout" data-sec="checkout">
+      <div class="checkout-wrap">
+        <h2 class="bar wide" id="checkoutTitle"></h2>
+
+        <!-- লাইভ গুগল শিট ডেমো বক্স -->
+        <div class="sheet-demo-card" id="sheetDemoCard">
+          <div class="sdc-content">
+            <div class="sdc-badge">
+              <span class="sdc-live-dot"></span> লাইভ ডেমো প্রিভিউ
+            </div>
+            <h3 class="sdc-title" id="sdcTitle">
+              📊 আপনার ডাটা কীভাবে সেভ হবে তা দেখে নিন
+            </h3>
+            <p class="sdc-desc" id="sdcDesc">
+              অর্ডার সাবমিট করার সাথে সাথে কাস্টমারের নাম, মোবাইল, ঠিকানা ও
+              অর্ডার তথ্য কীভাবে প্রফেশনাল গুগল শিটে স্বয়ংক্রিয়ভাবে জমা হয় তা
+              সরাসরি দেখুন।
+            </p>
+          </div>
+          <a
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="sdc-btn"
+            id="sheetDemoBtn"
+          >
+            <span class="sdc-icon">📑</span>
+            <span id="sdcBtnText"
+              >আপনার ডাটা যেভাবে সেভ হবে তা লাইভ দেখে নিন ➔</span
+            >
+          </a>
         </div>
 
-        <aside class="co-right">
-          <h3 class="sub">আপনার অর্ডার</h3>
-          <div class="summary">
-            <div class="sum-row head"><span>পণ্য</span><span>মোট</span></div>
-            <div class="sum-items-list" id="sumItemsList"></div>
-            <div class="sum-row"><span>সাব-টোটাল</span><span id="sumSub">—</span></div>
-            <div class="ship" id="shipping" role="radiogroup" aria-label="ডেলিভারি"></div>
-            <div class="sum-row"><span>ডেলিভারি চার্জ</span><span id="sumShip">—</span></div>
-            <div class="sum-row total"><span>সর্বমোট</span><span id="sumTotal">—</span></div>
-            <p class="pay-note" id="payNote">ক্যাশ অন ডেলিভারি – পণ্য হাতে পেয়ে টাকা দিন।</p>
+        <form id="orderForm" novalidate>
+          <div class="co-grid">
+            <div class="co-left">
+              <h3 class="sub">
+                পছন্দের পণ্য বেছে নিন (এক বা একাধিক সিলেক্ট করতে পারেন)
+              </h3>
+              <div
+                class="packages"
+                id="packages"
+                aria-label="পণ্য তালিকা"
+              ></div>
+
+              <h3 class="sub">বিলিং তথ্য</h3>
+              <div class="field">
+                <label for="name">আপনার নাম <i>*</i></label>
+                <input
+                  id="name"
+                  name="name"
+                  type="text"
+                  autocomplete="name"
+                  placeholder="আপনার পূর্ণ নাম"
+                />
+                <small class="err" data-err="name"></small>
+              </div>
+              <div class="field">
+                <label for="phone">মোবাইল নাম্বার <i>*</i></label>
+                <input
+                  id="phone"
+                  name="phone"
+                  type="tel"
+                  inputmode="tel"
+                  autocomplete="tel"
+                  placeholder="01XXXXXXXXX"
+                />
+                <small class="err" data-err="phone"></small>
+              </div>
+              <div class="field district-field">
+                <label for="district">জেলা / এলাকা <i>*</i></label>
+                <div class="dist-picker-wrap" id="distPickerWrap">
+                  <div
+                    class="dist-trigger-box"
+                    id="distTriggerBox"
+                    role="button"
+                    tabindex="0"
+                    aria-haspopup="listbox"
+                    aria-expanded="false"
+                  >
+                    <span class="dist-pin-icon">📍</span>
+                    <input
+                      id="district"
+                      name="district"
+                      type="text"
+                      autocomplete="off"
+                      readonly
+                      placeholder="জেলা নির্বাচন করুন (Select District)"
+                    />
+                    <button
+                      type="button"
+                      class="dist-btn-search"
+                      id="distOpenBtn"
+                      aria-label="জেলা খুঁজুন বা নির্বাচন করুন"
+                    >
+                      <span class="dbs-icon">🔍</span>
+                      <span class="dbs-text">খুঁজুন</span>
+                      <span class="dbs-arrow">▼</span>
+                    </button>
+                  </div>
+
+                  <!-- ড্রপডাউন সার্চ ও জেলা নির্বাচন পপআপ -->
+                  <div class="dist-dropdown-box" id="distDropdown">
+                    <div class="dist-search-bar">
+                      <span class="dist-search-icon">🔍</span>
+                      <input
+                        type="text"
+                        id="distSearchInput"
+                        placeholder="জেলার নাম লিখুন (যেমন: ঢাকা বা Dhaka)..."
+                        autocomplete="off"
+                      />
+                      <button
+                        type="button"
+                        class="dist-clear-btn"
+                        id="distClearBtn"
+                        aria-label="মুছে ফেলুন"
+                        title="মুছে ফেলুন"
+                        style="display: none"
+                      >
+                        ✕
+                      </button>
+                      <button
+                        type="button"
+                        class="dist-submit-search-btn"
+                        id="distDoSearchBtn"
+                      >
+                        খুঁজুন
+                      </button>
+                    </div>
+
+                    <div class="dist-status-bar">
+                      <span id="distCountText">মোট ৬৪টি জেলা</span>
+                      <span class="dist-hint">ক্লিক করে নির্বাচন করুন</span>
+                    </div>
+
+                    <div
+                      class="dist-options-list"
+                      id="distOptionsList"
+                      role="listbox"
+                    ></div>
+
+                    <div
+                      class="dist-custom-option"
+                      id="distCustomOption"
+                      style="display: none"
+                    >
+                      <button type="button" id="distUseCustomBtn">
+                        <span>✍️ আপনার এলাকা হিসেবে ব্যবহার করুন: </span
+                        ><strong id="distCustomVal"></strong>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <small class="err" data-err="district"></small>
+              </div>
+              <div class="field">
+                <label for="address">সম্পূর্ণ ঠিকানা <i>*</i></label>
+                <textarea
+                  id="address"
+                  name="address"
+                  rows="2"
+                  autocomplete="street-address"
+                  placeholder="বাসা/রোড/থানা"
+                ></textarea>
+                <small class="err" data-err="address"></small>
+              </div>
+              <div class="field">
+                <label for="note">অর্ডার নোট (ঐচ্ছিক)</label>
+                <textarea
+                  id="note"
+                  name="note"
+                  rows="2"
+                  placeholder="কোনো বিশেষ নির্দেশনা থাকলে লিখুন"
+                ></textarea>
+              </div>
+            </div>
+
+            <aside class="co-right">
+              <h3 class="sub">আপনার অর্ডার</h3>
+              <div class="summary">
+                <div class="sum-row head">
+                  <span>পণ্য</span><span>মোট</span>
+                </div>
+                <div class="sum-items-list" id="sumItemsList"></div>
+                <div class="sum-row">
+                  <span>সাব-টোটাল</span><span id="sumSub">—</span>
+                </div>
+                <div
+                  class="ship"
+                  id="shipping"
+                  role="radiogroup"
+                  aria-label="ডেলিভারি"
+                ></div>
+                <div class="sum-row">
+                  <span>ডেলিভারি চার্জ</span><span id="sumShip">—</span>
+                </div>
+                <div class="sum-row total">
+                  <span>সর্বমোট</span><span id="sumTotal">—</span>
+                </div>
+                <p class="pay-note" id="payNote">
+                  ক্যাশ অন ডেলিভারি – পণ্য হাতে পেয়ে টাকা দিন।
+                </p>
+              </div>
+              <input
+                type="text"
+                name="website"
+                id="hp"
+                tabindex="-1"
+                autocomplete="off"
+                aria-hidden="true"
+                class="hp"
+              />
+              <button type="submit" class="btn-submit" id="submitBtn">
+                <span class="spin" aria-hidden="true"></span
+                ><span id="submitLabel">অর্ডার কনফার্ম করুন</span>
+              </button>
+              <div
+                class="form-msg"
+                id="formMsg"
+                role="status"
+                aria-live="polite"
+              ></div>
+            </aside>
           </div>
-          <input type="text" name="website" id="hp" tabindex="-1" autocomplete="off" aria-hidden="true" class="hp">
-          <button type="submit" class="btn-submit" id="submitBtn"><span class="spin" aria-hidden="true"></span><span id="submitLabel">অর্ডার কনফার্ম করুন</span></button>
-          <div class="form-msg" id="formMsg" role="status" aria-live="polite"></div>
-        </aside>
+        </form>
       </div>
-    </form>
-  </div>
-</section>
+    </section>
 
-<!-- 13. Footer -->
-<footer class="s-footer" data-sec="footer">
-  <p id="footMsg"></p>
-  <p class="links" id="legalLinks"><a href="#" id="lnkPrivacy">Privacy Policy</a> | <a href="#" id="lnkTerms">Terms &amp; Conditions</a></p>
-  <p class="credit" id="footCredit"></p>
-</footer>
+    <!-- 13. Footer -->
+    <footer class="s-footer" data-sec="footer">
+      <p id="footMsg"></p>
+      <p class="links" id="legalLinks">
+        <a href="#" id="lnkPrivacy">Privacy Policy</a> |
+        <a href="#" id="lnkTerms">Terms &amp; Conditions</a>
+      </p>
+      <p class="credit" id="footCredit"></p>
+    </footer>
 
-<script src="js/config.js"></script>
-<script src="js/app.js"></script>
-</body>
+    <script src="js/config.js"></script>
+    <script src="js/app.js"></script>
+  </body>
 </html>

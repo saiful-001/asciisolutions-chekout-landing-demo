@@ -1,6 +1,8 @@
 /* এই ফাইলটি Admin Panel (admin.html) দিয়ে তৈরি হয়। হাতে এডিট না করে Admin Panel ব্যবহার করুন। */
 window.SITE_CONFIG = {
-  "apiEndpoint": "https://script.google.com/macros/s/AKfycby3qTjUih_scnIbOhlHunXzlusXi6wNF2thMydPg85V7KnPB8QbEpr1QQ7oYQsQUrmn/exec",
+  "themeId": "theme2",
+  "googleSheetUrl": "https://docs.google.com/spreadsheets/d/1foOt8prRFDxrXUg25etF1zo_uDpWHs8h-276ZrJDwDU/edit?gid=0#gid=0",
+  "apiEndpoint": "https://script.google.com/macros/s/AKfycbxQOYCuVLxtdgXQoiGM_ylWLU6XleOlxHd6oxrKb5alSw1C1pugywwKVZResS5Ro8JJ/exec",
   "sections": {
     "top": true,
     "video": true,
@@ -33,7 +35,7 @@ window.SITE_CONFIG = {
   "pageTitle": "খাঁটি মধু ও প্রিমিয়াম হানি নাট – অর্ডার করুন",
   "sheetDemo": {
     "enabled": true,
-    "url": "https://docs.google.com/spreadsheets/d/1Zj6Zr-Zm4ypDHxR8O4l2lyJ3P3U3kty1_VNgfsDP20A/edit?gid=0#gid=0",
+    "url": "https://docs.google.com/spreadsheets/d/1foOt8prRFDxrXUg25etF1zo_uDpWHs8h-276ZrJDwDU/edit?gid=0#gid=0",
     "title": "📊 আপনার ডাটা কীভাবে সেভ হবে তা দেখে নিন",
     "subtitle": "অর্ডার সাবমিট করার সাথে সাথে কাস্টমারের নাম, মোবাইল, ঠিকানা ও অর্ডার তথ্য কীভাবে প্রফেশনাল গুগল শিটে স্বয়ংক্রিয়ভাবে জমা হয় তা সরাসরি দেখুন।",
     "btnText": "📋 আপনার ডাটা যেভাবে সেভ হবে তা লাইভ দেখে নিন ➔"
@@ -85,7 +87,8 @@ window.SITE_CONFIG = {
       "price": 550,
       "oldPrice": 650,
       "badge": "",
-      "thumb": "assets/products/honey-500.jpg"
+      "thumb": "assets/products/honey-500.jpg",
+      "active": true
     },
     {
       "id": "m1000",
@@ -93,7 +96,8 @@ window.SITE_CONFIG = {
       "price": 1050,
       "oldPrice": 1200,
       "badge": "জনপ্রিয়",
-      "thumb": "assets/products/honey-1000.jpg"
+      "thumb": "assets/products/honey-1000.jpg",
+      "active": true
     },
     {
       "id": "hn500",
@@ -101,7 +105,8 @@ window.SITE_CONFIG = {
       "price": 650,
       "oldPrice": 750,
       "badge": "",
-      "thumb": "assets/products/nut-500.jpg"
+      "thumb": "assets/products/nut-500.jpg",
+      "active": true
     },
     {
       "id": "hn1000",
@@ -109,7 +114,8 @@ window.SITE_CONFIG = {
       "price": 1250,
       "oldPrice": 1400,
       "badge": "সেরা পছন্দ",
-      "thumb": "assets/products/nut-1000.jpg"
+      "thumb": "assets/products/nut-1000.jpg",
+      "active": true
     },
     {
       "id": "combo",
@@ -117,7 +123,8 @@ window.SITE_CONFIG = {
       "price": 2200,
       "oldPrice": 2450,
       "badge": "মেগা অফার",
-      "thumb": "assets/products/combo.jpg"
+      "thumb": "assets/products/combo.jpg",
+      "active": true
     }
   ],
   "defaultProduct": "m1000",
@@ -205,5 +212,6 @@ window.SITE_CONFIG = {
     "activity": true,
     "sample": 100
   },
-  "fraudMinutes": 2
+  "fraudMinutes": 2,
+  "siteUrl": "https://asciisolutions-chekout-landing-demo.vercel.app"
 };
